@@ -1,0 +1,80 @@
+{
+    "LocalizedStrings": [
+        {
+            "ID": "Ratchet",
+            "value": "Inc/Dec\u000ARatchet"
+        },
+        {
+            "ID": "WithoutRatchet",
+            "value": "Inc/Dec"
+        },
+        {
+            "ID": "NegativeAsPositiveRatchet",
+            "value": "Inc/Dec | Cross \u21C4\u000ARatchet"
+        },
+        {
+            "ID": "NegativeAsPositiveWithoutRatchet",
+            "value": "Inc/Dec | Cross \u21C4"
+        },
+        {
+            "ID": "ScrollH",
+            "value": "Scroll \u2194 [SHIFT] \u2195 \u000A[CTRL] Faster"
+        },
+        {
+            "ID": "ScrollV",
+            "value": "Scroll \u2195 [SHIFT] \u2194 \u000A[CTRL] Faster"
+        },
+        {
+            "ID": "ScrollHActive",
+            "value": "Scroll \u2194 [SHIFT]\u000AActive Pane [ALT]"
+        },
+        {
+            "ID": "ScrollVActive",
+            "value": "Scroll \u2195 [SHIFT]\u000AActive Pane [ALT]"
+        },
+        {
+            "ID": "ScrollHInactive",
+            "value": "Scroll \u2194 [SHIFT]\u000AInactive Pane [ALT]"
+        },
+        {
+            "ID": "ScrollVInactive",
+            "value": "Scroll \u2195 [SHIFT]\u000AInactive Pane [ALT]"
+        },
+        {
+            "ID": "ChangeFile",
+            "value": "Next / Prev File\u000A[CTRL] Instant"
+        },
+        {
+            "ID": "ChangeFileByPane",
+            "value": "Next / Prev File\u000AActive Pane [ALT]"
+        },
+        {
+            "ID": "ResizePanes",
+            "value": "Resize Panes"
+        },
+        {
+            "ID": "Hue",
+            "value": "Hue"
+        },
+        {
+            "ID": "Saturation",
+            "value": "Saturation"
+        },
+        {
+            "ID": "Lightness",
+            "value": "Lightness"
+        },
+        {
+            "ID": "Alpha",
+            "value": "Alpha"
+        },
+        {
+            "ID": "changetoolvalue",
+            "value": "Contextual"
+        },
+        {
+            "ID": "keystrokeassignment",
+            "value": "Split View (Keystroke: F9)"
+        }
+    ]
+}

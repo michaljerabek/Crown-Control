@@ -1,0 +1,41 @@
+{
+    "GUID": "9df01287-806d-4292-9ee4-2c6e477fee55",
+    "info": {
+        "name": "Brackets",
+        "publisher": "mjerabek",
+        "version": "1.0",
+        "win_name": "Brackets.exe",
+        "win_minimum_supported_version": "0.0.0",
+        "win_maximum_supported_version": "9999.0.0",
+        "mac_bundle": "Brackets.app",
+        "mac_path": "/Applications/Brackets.app",
+        "mac_paths": [
+            {
+                "path": "/Applications/Brackets.app",
+                "mac_minimum_supported_version": "",
+                "mac_maximum_supported_version": "",
+                "name_suffix": ""
+            }
+        ]
+    },
+    "crown": {
+        "rotate": {
+            "default_task": "changetoolvalue",
+            "tasks": [
+                "changetoolvalue"
+            ],
+            "short_list": [
+                "changetoolvalue"
+            ]
+        },
+        "press": {
+            "default_task": "keystrokeassignment",
+            "tasks": [
+                "keystrokeassignment"
+            ],
+            "short_list": [
+                "keystrokeassignment"
+            ]
+        }
+    }
+}

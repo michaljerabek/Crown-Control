@@ -1,0 +1,24 @@
+{
+  "name": "mjerabek.cz.bracketscrown",
+  "version": "1.0.0",
+  "description": "Logitech Crown integration for Brackets.",
+  "main": "main.js",
+  "dependencies": {
+    "decimal.js": "^10.0.1",
+    "tinycolor2": "^1.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "logitech",
+    "crown",
+    "craft",
+    "keyboard",
+    "brackets"
+  ],
+  "author": "Michal Jeřábek",
+  "url": "http://mjerabek.cz",
+  "license": "MIT"
+}

@@ -1,0 +1,208 @@
+{
+    "GUID": "9df01287-806d-4292-9ee4-2c6e477fee55",
+    "tools": [
+        {
+            "name": "IncOrDecNumber",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "Ratchet",
+                    "image_file_path": "increase-ratchet.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 1,
+                    "name": "WithoutRatchet",
+                    "image_file_path": "increase.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 2,
+                    "name": "NegativeAsPositiveRatchet",
+                    "image_file_path": "increase-cross-ratchet.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 3,
+                    "name": "NegativeAsPositiveWithoutRatchet",
+                    "image_file_path": "increase-cross.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "ChangeColor",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "Hue",
+                    "image_file_path": "hue.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 1,
+                    "name": "Saturation",
+                    "image_file_path": "saturation.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 2,
+                    "name": "Lightness",
+                    "image_file_path": "lightness.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 3,
+                    "name": "Alpha",
+                    "image_file_path": "opacity.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                }
+            ]
+        },
+        {
+            "name": "DefaultTool",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollH",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ScrollV",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 2,
+                    "name": "ChangeFile",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewCols",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollHActive",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ScrollVActive",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 2,
+                    "name": "ChangeFileByPane",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 3,
+                    "name": "ScrollHInactive",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 4,
+                    "name": "ScrollVInactive",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 6,
+                    "name": "ResizePanes",
+                    "image_file_path": "horizontal-resize.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewRows",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollHActive",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ScrollVActive",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 2,
+                    "name": "ChangeFileByPane",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 3,
+                    "name": "ScrollHInactive",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 4,
+                    "name": "ScrollVInactive",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 6,
+                    "name": "ResizePanes",
+                    "image_file_path": "vertical-resize.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        }
+    ],
+    "tasks": [
+        {
+            "name": "changetoolvalue",
+            "win_id": "0x10064",
+            "mac_id": 615
+        },
+        {
+            "name": "keystrokeassignment",
+            "win_id": "0x10000",
+            "mac_id": 73
+        }
+    ]
+}
