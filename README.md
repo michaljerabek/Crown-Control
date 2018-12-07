@@ -2,7 +2,7 @@
 
 *Probably won't work on macOS.*
 
-## Installation instructions
+## Installation
 
 **This is not an official way to install custom plugin for Logitech Options. But it works.** 
 
@@ -28,11 +28,11 @@ On macOS you can use official method, but it may not work (it didn't work for me
 4. Click on `All Applications` > `Brackets` and then `Crown` > `Press` and set it to `F9`.
 5. Try it and if it works, let me know.
 
-## What you can do with this
+## How to use
 
-*I'm currently trying to figure out what could be useful so there is no guarantee it will work the same in future versions.*
+*This is still in experimental state so there is no guarantee it will work the same in future versions. (I'm still trying to figure out what could be useful.)*
 
-*You have to learn to use it, but if you do that, controlling Brackets only from keyboard should be easier.*
+*You have to learn to use it, but if you do, controlling Brackets only from keyboard should be easier.*
 
 ### Press (Crown)
 Switches currently active pane or turns on *Split View*.
@@ -111,7 +111,7 @@ div::after {
 
 ### Turn: Colors
 
-If the cursor(s) is on any color, you can change its hue, saturation, lightness or alpha value. The cursor has to be on non-number part of the color definition (except colors in HEX format). Available options:
+If the cursor(s) is on any color, you can change its hue, saturation, lightness or alpha value. The cursor has to be on non-number part of the color definition (except colors in HEX formats). Available options:
 
 1. Hue
 2. Saturation
@@ -125,5 +125,9 @@ By default Hue, Saturation and Lightness increase or decrease value by 5 and Alp
 - `ALT` — smaller step (HSL: 1, A: 0.01)
 - `CTRL + ALT` — even smaller step (HSL: Magic numbers, A: 0.001)
 - `CTRL + ALT + SHIFT` — even smaller step for Saturation and Lightness (0.2)
+
 ---
-**Tip: ALT-GR (right ALT) works the same as left ALT, so you can use right ALT, CTRL and SHIFT keys.**
+
+On macOS `ALT` should correspond to `OPT` and `CTRL` to `CMD`.
+
+**Tip: ALT-GR (right ALT) works the same as left ALT, so you can use the right modifier keys.**
