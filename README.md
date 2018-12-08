@@ -6,7 +6,7 @@
 
 **This is not an official way to install custom plugin for Logitech Options. But it works.** 
 
-After you have installed the extention:
+After you have installed the extention from [Extention Manager](https://github.com/adobe/brackets/wiki/Brackets-Extensions):
 
 1. Open Logitech Options and select your keyboard (Craft).
 2. Click on `All Applications` and select `Brackets`.
@@ -30,7 +30,7 @@ On macOS you can use official method, but it may not work (it didn't work for me
 
 ## How to use
 
-*This is still in experimental state so there is no guarantee it will work the same in future versions. (I'm still trying to figure out what could be useful.)*
+*This is still in experimental state. (I'm still trying to find out what could be useful.)*
 
 *You have to learn to use it, but if you do, controlling Brackets only from keyboard should be easier.*
 
@@ -40,30 +40,30 @@ Switches currently active pane or turns on *Split View*.
 - `CTRL` + `SHIFT` — turns off *Split View*
 - `CTRL` + `ALT` — switches active pane and its size
 
-*It requires F9 and F9 + Modifier keys shortcuts to be available.*
+**It requires `F9` and `F9 + MODIFIER_KEYS` shortcuts to be available.**
 
 ### Turn: Default context
 
 Available options:
 
-1. Horizontal scroll (active pane)
-    - `SHIFT` — vertical scroll
-    - `CTRL` — faster scroll
+1. Horizontal scrolling (active pane)
+    - `SHIFT` — vertical scrolling
+    - `CTRL` — faster scrolling
     - `ALT` — inactive pane
-2. Vertical scroll (active pane)
-    - `SHIFT` — horizontal scroll
-    - `CTRL` — faster scroll
+2. Vertical scrolling (active pane)
+    - `SHIFT` — horizontal scrolling
+    - `CTRL` — faster scrolling
     - `ALT` — inactive pane
 3. Open next / previous file (active pane)
     - `CTRL` — instantly opens next / previous file
     - `ALT` — inactive pane
-4. Horizontal scroll — inactive pane
-    - `SHIFT` — vertical scroll
-    - `CTRL` — faster scroll
+4. Horizontal scrolling — inactive pane
+    - `SHIFT` — vertical scrolling
+    - `CTRL` — faster scrolling
     - `ALT` — active pane
-5. Vertical scroll — inactive pane
-    - `SHIFT` — horizontal scroll
-    - `CTRL` — faster scroll
+5. Vertical scrolling — inactive pane
+    - `SHIFT` — horizontal scrolling
+    - `CTRL` — faster scrolling
     - `ALT` — active pane
 6. Resize panes
 
