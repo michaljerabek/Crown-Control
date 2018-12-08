@@ -660,9 +660,20 @@ define(function (require, exports, module) {
 
         if (changes && changes.length) {
 
-            editor.setSelections(changes.map(function (change) { return change.currentRange; }), undefined, undefined, origin);
+            var edits = changes.map(function (change) {
 
-            editor._codeMirror.replaceSelections(changes.map(function (change) { return change.replacement; }));
+                change.currentRange.text = change.replacement;
+
+                return {
+                    edit: change.currentRange
+                };
+            });
+
+            editor.document.doMultipleEdits(edits, origin);
+
+//            editor.setSelections(changes.map(function (change) { return change.currentRange; }), undefined, undefined, origin);
+//
+//            editor._codeMirror.replaceSelections(changes.map(function (change) { return change.replacement; }));
 
             editor.setSelections(changes.map(function (change) { return change.afterRange; }), undefined, undefined, origin);
 

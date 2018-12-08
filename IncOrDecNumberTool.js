@@ -30,7 +30,9 @@ define(function (require, exports, module) {
         TEST_OPACITY = /opacity:\s*[0-9.\-]+[ ;]/gi,
         TEST_FONTWEIGHT = /font-weight:\s*[0-9.\-]+[ ;]/gi,
 
-        UPDATE_UI_TIMEOUT = 150;
+        UPDATE_UI_TIMEOUT = 150,
+
+        CLEAR_LAST_SELECTION_TIMEOUT = 3000;
 
 
     var originCounter = 0,
@@ -41,7 +43,11 @@ define(function (require, exports, module) {
 
         modifiersForCurrentUse = [],
         modifiersForCurrentUseInitUpdate = false,
+
         lastSelection = null,
+        lastOptionWasCross = false,
+        clearLastSelectionTimeout,
+
         numbersNegativity = {};
 
     function noNegativeValue(value) {
@@ -117,9 +123,11 @@ define(function (require, exports, module) {
                     zero1Fn = getMinMaxFn(0, 1),
                     rotate360Fn = function (value) {
 
+                        var decimalValue = new Decimal(value);
+
                         return value < 0 ?
-                            360 + (value % 360):
-                        value % 360;
+                            decimalValue.mod(360).add(360).toNumber():
+                        decimalValue.mod(360).toNumber();
                     };
 
                 return function (match, numberPos) {
@@ -365,9 +373,22 @@ define(function (require, exports, module) {
 
         if (enabled && crownMsg.touch_state) {
 
+            clearTimeout(clearLastSelectionTimeout);
+
             updateUIOnTouchTimeout = setTimeout(function() {
                 updateUI(getChangeByValue());
             }, UPDATE_UI_TIMEOUT);
+        }
+
+        if (enabled && !crownMsg.touch_state && lastOptionWasCross) {
+
+            clearTimeout(clearLastSelectionTimeout);
+
+            clearLastSelectionTimeout = setTimeout(function() {
+
+                lastSelection = null;
+
+            }, CLEAR_LAST_SELECTION_TIMEOUT);
         }
     });
 
@@ -468,6 +489,8 @@ define(function (require, exports, module) {
             isSameSelection = false,
 
             changes;
+
+        lastOptionWasCross = crossDirection;
 
         selections = selections.map(function (selection) {
 
@@ -604,9 +627,20 @@ define(function (require, exports, module) {
 
         if (changes && changes.length) {
 
-            editor.setSelections(changes.map(function (change) { return change.currentRange; }), undefined, undefined, origin);
+            var edits = changes.map(function (change) {
 
-            editor._codeMirror.replaceSelections(changes.map(function (change) { return change.replacement; }));
+                change.currentRange.text = change.replacement;
+
+                return {
+                    edit: change.currentRange
+                };
+            });
+
+            editor.document.doMultipleEdits(edits, origin);
+
+//            editor.setSelections(changes.map(function (change) { return change.currentRange; }), undefined, undefined, origin);
+//
+//            editor._codeMirror.replaceSelections(changes.map(function (change) { return change.replacement; }));
 
             editor.setSelections(changes.map(function (change) { return change.afterRange; }), undefined, undefined, origin);
 
