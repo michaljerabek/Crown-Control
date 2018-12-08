@@ -23,8 +23,7 @@ define(function (require, exports, module) {
 
 
     var currentTool = null,
-        currentToolId = "",
-        updateUIOnTouchTimeout = null;
+        currentToolId = "";
 
 
     CrownConnection.on("close", function () {
@@ -34,8 +33,6 @@ define(function (require, exports, module) {
     });
 
     CrownConnection.on("crown_touch_event", function (crownMsg) {
-
-        clearTimeout(updateUIOnTouchTimeout);
 
         if (crownMsg.touch_state) {
 
