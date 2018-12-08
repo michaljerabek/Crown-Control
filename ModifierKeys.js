@@ -32,7 +32,11 @@ define(function (require, exports, module) {
         if (lastModKeysState.altKey !== exports.altKey || lastModKeysState.ctrlKey !== exports.ctrlKey || lastModKeysState.shiftKey !== exports.shiftKey) {
 
             eventHandlers.change.forEach(function (handlerFn) {
-                handlerFn(exports.ctrlKey, exports.altKey, exports.shiftKey);
+                handlerFn(
+                    lastModKeysState.ctrlKey !== exports.ctrlKey,
+                    lastModKeysState.altKey !== exports.altKey,
+                    lastModKeysState.shiftKey !== exports.shiftKey
+                );
             });
 
             lastModKeysState.altKey = exports.altKey;

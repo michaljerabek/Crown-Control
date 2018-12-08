@@ -25,6 +25,13 @@ define(function (require, exports, module) {
 
         sidebarWasHidden;
 
+    ModifierKeys.on("change", function (ctrl, alt) {
+
+        if (alt) {
+
+            changeFileCounter = 0;
+        }
+    });
 
     function highlightFile(paneId, index, toggleSelectedClassIndex) {
 
