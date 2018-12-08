@@ -7,28 +7,28 @@
             "tool_options": [
                 {
                     "index": 0,
-                    "name": "Ratchet",
+                    "name": "NumberRatchet",
                     "image_file_path": "increase-ratchet.png",
                     "enabled": true,
                     "ratchet_enabled": true
                 },
                 {
                     "index": 1,
-                    "name": "WithoutRatchet",
+                    "name": "NumberWithoutRatchet",
                     "image_file_path": "increase.png",
                     "enabled": true,
                     "ratchet_enabled": false
                 },
                 {
                     "index": 2,
-                    "name": "NegativeAsPositiveRatchet",
+                    "name": "NumberCrossRatchet",
                     "image_file_path": "increase-cross-ratchet.png",
                     "enabled": true,
                     "ratchet_enabled": true
                 },
                 {
                     "index": 3,
-                    "name": "NegativeAsPositiveWithoutRatchet",
+                    "name": "NumberCrossWithoutRatchet",
                     "image_file_path": "increase-cross.png",
                     "enabled": true,
                     "ratchet_enabled": false

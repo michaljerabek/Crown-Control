@@ -464,7 +464,7 @@ define(function (require, exports, module) {
 
             defaultChangeByValue = getChangeByValue(),
 
-            crossDirection = !!crownMsg.task_options.current_tool_option.match(/NegativeAsPositive/i),
+            crossDirection = !!crownMsg.task_options.current_tool_option.match(/NumberCross/i),
             isSameSelection = false,
 
             changes;

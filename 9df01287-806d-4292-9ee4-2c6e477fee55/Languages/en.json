@@ -1,19 +1,19 @@
 {
     "LocalizedStrings": [
         {
-            "ID": "Ratchet",
+            "ID": "NumberRatchet",
             "value": "Inc/Dec\u000ARatchet"
         },
         {
-            "ID": "WithoutRatchet",
+            "ID": "NumberWithoutRatchet",
             "value": "Inc/Dec"
         },
         {
-            "ID": "NegativeAsPositiveRatchet",
+            "ID": "NumberCrossRatchet",
             "value": "Inc/Dec | Cross \u21C4\u000ARatchet"
         },
         {
-            "ID": "NegativeAsPositiveWithoutRatchet",
+            "ID": "NumberCrossWithoutRatchet",
             "value": "Inc/Dec | Cross \u21C4"
         },
         {
