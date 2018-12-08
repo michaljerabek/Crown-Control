@@ -638,10 +638,6 @@ define(function (require, exports, module) {
 
             editor.document.doMultipleEdits(edits, origin);
 
-//            editor.setSelections(changes.map(function (change) { return change.currentRange; }), undefined, undefined, origin);
-//
-//            editor._codeMirror.replaceSelections(changes.map(function (change) { return change.replacement; }));
-
             editor.setSelections(changes.map(function (change) { return change.afterRange; }), undefined, undefined, origin);
 
             if (crossDirection) {
