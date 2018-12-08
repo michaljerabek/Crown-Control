@@ -52,8 +52,8 @@ define(function (require, exports, module) {
         dirH = (dirH && !ModifierKeys.shiftKey) || (!dirH && ModifierKeys.shiftKey);
 
         editorToScroll.setScrollPos(
-            !dirH ? currentScroll.x : Math.max(0, currentScroll.x + scrollDelta),
-            !dirH ? Math.max(0, currentScroll.y + scrollDelta) : currentScroll.y
+            !dirH ? currentScroll.x : Math.max(0, Math.round(currentScroll.x + scrollDelta)),
+            !dirH ? Math.max(0, Math.round(currentScroll.y + scrollDelta)) : currentScroll.y
         );
     };
 });
