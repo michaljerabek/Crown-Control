@@ -20,10 +20,8 @@ define(function (require, exports, module) {
     var HIGHLIGHT_COLOR = "rgba(255, 255, 255, 0.1)";
 
 
-    var lastDirection = 0,
-        changeFileCounter = 0,
-        changeFileDebounce = null,
-        changeFileDebounceFn = null,
+    var changeFileCounter = 0,
+        changeFileOnTouchEndFn = null,
 
         sidebarWasHidden;
 
@@ -98,14 +96,10 @@ define(function (require, exports, module) {
 
     exports.onTouchEnd = function () {
 
-        if (changeFileDebounceFn) {
+        if (changeFileOnTouchEndFn) {
 
-            clearTimeout(changeFileDebounce);
-
-            changeFileDebounceFn();
+            changeFileOnTouchEndFn();
         }
-
-        lastDirection = 0;
     };
 
     exports.shouldBeUsed = function (crownMsg) {
@@ -138,31 +132,22 @@ define(function (require, exports, module) {
             fileToChangeIndex = (files.length + fileToChangeIndex);
         }
 
-        clearTimeout(changeFileDebounce);
-
         if (ModifierKeys.ctrlKey) {
+
+            changeFileOnTouchEndFn = null;
 
             changeFile(files[fileToChangeIndex].fullPath, paneToChangeId, useActivePane ? -1 : fileToChangeIndex);
 
         } else {
 
-            changeFileDebounceFn = function () {
+            changeFileOnTouchEndFn = function () {
 
                 changeFile(files[fileToChangeIndex].fullPath, paneToChangeId, useActivePane ? -1 : fileToChangeIndex);
 
-                lastDirection = 0;
-
-                changeFileDebounceFn = null;
+                changeFileOnTouchEndFn = null;
             };
-
-            changeFileDebounce = setTimeout(
-                changeFileDebounceFn,
-                1000 + Math.min(changeFileCounter * 100, 500) + (lastDirection && lastDirection !== crownMsg.ratchet_delta ? 2000: 0)
-            );
 
             highlightFile(paneToChangeId, fileToChangeIndex);
         }
-
-        lastDirection = crownMsg.ratchet_delta;
     };
 });
