@@ -7,7 +7,11 @@ define(function (require, exports, module) {
 
     var EditorManager = brackets.getModule("editor/EditorManager"),
 
+        CrownConnection = require("CrownConnection"),
+        ModifierKeys = require("ModifierKeys"),
+
         tinycolor = require("node_modules/tinycolor2/tinycolor");
+
 
     var TOOL_ID = "ChangeColor",
 
@@ -20,20 +24,15 @@ define(function (require, exports, module) {
 
         UPDATE_UI_TIMEOUT = 150;
 
-    var CrownConnection = null,
 
-        originCounter = 0,
+    var originCounter = 0,
+
+        enabled = false,
 
         lastSelection = null,
         colorsData = {},
 
-        updateUIOnTouchTimeout,
-
-        modKeys = {
-            altKey: false,
-            ctrlKey: false,
-            shiftKey: false
-        };
+        updateUIOnTouchTimeout;
 
 
     function getMatchForSelection(text, regex, selection) {
@@ -50,14 +49,9 @@ define(function (require, exports, module) {
         return match;
     }
 
-    function updateUI(CrownConnection, nameValueArray) {
+    function updateUI(nameValueArray) {
 
         clearTimeout(updateUIOnTouchTimeout);
-
-        if (!CrownConnection) {
-
-            return;
-        }
 
         CrownConnection.updateTool(TOOL_ID, nameValueArray);
     }
@@ -86,31 +80,31 @@ define(function (require, exports, module) {
             case "Alpha":
 
                 switch (true) {
-                    case modKeys.ctrlKey && modKeys.altKey: return 0.001;
-                    case modKeys.shiftKey: return 0.2;
-                    case modKeys.ctrlKey: return 0.1;
-                    case modKeys.altKey: return 0.01;
+                    case ModifierKeys.ctrlKey && ModifierKeys.altKey: return 0.001;
+                    case ModifierKeys.shiftKey: return 0.2;
+                    case ModifierKeys.ctrlKey: return 0.1;
+                    case ModifierKeys.altKey: return 0.01;
                     default: return 0.05;
                 }
 
             case "Hue":
 
                 switch (true) {
-                    case modKeys.ctrlKey && modKeys.altKey: return 0.25;
-                    case modKeys.shiftKey: return 20;
-                    case modKeys.ctrlKey: return 10;
-                    case modKeys.altKey: return 1;
+                    case ModifierKeys.ctrlKey && ModifierKeys.altKey: return 0.25;
+                    case ModifierKeys.shiftKey: return 20;
+                    case ModifierKeys.ctrlKey: return 10;
+                    case ModifierKeys.altKey: return 1;
                     default: return 5;
                 }
 
             default:
 
                 switch (true) {
-                    case modKeys.ctrlKey && modKeys.altKey && modKeys.shiftKey: return 0.2;
-                    case modKeys.ctrlKey && modKeys.altKey: return 1 / 3;
-                    case modKeys.shiftKey: return 20;
-                    case modKeys.ctrlKey: return 10;
-                    case modKeys.altKey: return 1;
+                    case ModifierKeys.ctrlKey && ModifierKeys.altKey && ModifierKeys.shiftKey: return 0.2;
+                    case ModifierKeys.ctrlKey && ModifierKeys.altKey: return 1 / 3;
+                    case ModifierKeys.shiftKey: return 20;
+                    case ModifierKeys.ctrlKey: return 10;
+                    case ModifierKeys.altKey: return 1;
                     default: return 5;
                 }
         }
@@ -437,21 +431,24 @@ define(function (require, exports, module) {
         return updatedText;
     }
 
-    exports.addModKeysState = function (_modKeys) {
-
-        modKeys = _modKeys;
-    };
-
-    exports.updateUIOnTouch = function () {
+    exports.disable = function () {
 
         clearTimeout(updateUIOnTouchTimeout);
 
-        updateUIOnTouchTimeout = setTimeout(function() {
-            updateUI(CrownConnection, [{name: "", value: ""}]);
-        }, UPDATE_UI_TIMEOUT);
-
-        return updateUIOnTouchTimeout;
+        enabled = false;
     };
+
+    CrownConnection.on("crown_touch_event", function (crownMsg) {
+
+        clearTimeout(updateUIOnTouchTimeout);
+
+        if (enabled && crownMsg.touch_state) {
+
+            updateUIOnTouchTimeout = setTimeout(function() {
+                updateUI([{name: "", value: ""}]);
+            }, UPDATE_UI_TIMEOUT);
+        }
+    });
 
     exports.shouldBeUsed = function () {
 
@@ -497,9 +494,9 @@ define(function (require, exports, module) {
         return TOOL_ID;
     };
 
-    exports.use = function (_CrownConnection) {
+    exports.use = function () {
 
-        CrownConnection = _CrownConnection;
+        enabled = true;
 
         CrownConnection.changeTool(TOOL_ID);
     };
@@ -673,17 +670,17 @@ define(function (require, exports, module) {
 
             if (changes.length === 1) {
 
-                updateUI(CrownConnection, getUpdateToolFromHsl(changes[0].updatedHsl, option));
+                updateUI(getUpdateToolFromHsl(changes[0].updatedHsl, option));
 
             } else {
 
                 if (allChangingValuesAreTheSame(option, changes)) {
 
-                    updateUI(CrownConnection, getUpdateToolFromHsl(changes[0].updatedHsl, option));
+                    updateUI(getUpdateToolFromHsl(changes[0].updatedHsl, option));
 
                 } else {
 
-                    updateUI(CrownConnection, [{name: option, value: ""}]);
+                    updateUI([{name: option, value: ""}]);
                 }
             }
         }

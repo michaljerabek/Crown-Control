@@ -11,17 +11,13 @@ define(function (require, exports, module) {
         SidebarView = brackets.getModule("project/SidebarView");
 
 
+    var ModifierKeys = require("ModifierKeys");
+
+
     var TOOL_OPTION_NAME_REGEX = /^ChangeFile/;
 
 
     var HIGHLIGHT_COLOR = "rgba(255, 255, 255, 0.1)";
-
-
-    var modKeys = {
-            altKey: false,
-            ctrlKey: false,
-            shiftKey: false
-        };
 
 
     var lastDirection = 0,
@@ -112,11 +108,6 @@ define(function (require, exports, module) {
         lastDirection = 0;
     };
 
-    exports.addModKeysState = function (_modKeys) {
-
-        modKeys = _modKeys;
-    };
-
     exports.shouldBeUsed = function (crownMsg) {
 
         return crownMsg.task_options.current_tool_option.match(TOOL_OPTION_NAME_REGEX);
@@ -130,7 +121,7 @@ define(function (require, exports, module) {
         }
 
         var activePaneId = MainViewManager.getActivePaneId(),
-            useActivePane = MainViewManager.getPaneCount() === 1 || !modKeys.altKey,
+            useActivePane = MainViewManager.getPaneCount() === 1 || !ModifierKeys.altKey,
             paneToChangeId = useActivePane ? activePaneId : activePaneId === MainViewManager.FIRST_PANE ? MainViewManager.SECOND_PANE : MainViewManager.FIRST_PANE,
             paneToChange = MainViewManager._getPane(paneToChangeId),
             editorToChange = paneToChange._currentView,
@@ -149,7 +140,7 @@ define(function (require, exports, module) {
 
         clearTimeout(changeFileDebounce);
 
-        if (modKeys.ctrlKey) {
+        if (ModifierKeys.ctrlKey) {
 
             changeFile(files[fileToChangeIndex].fullPath, paneToChangeId, useActivePane ? -1 : fileToChangeIndex);
 

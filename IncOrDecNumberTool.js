@@ -8,7 +8,10 @@ define(function (require, exports, module) {
     var EditorManager = brackets.getModule("editor/EditorManager");
 
 
-    var Decimal = require("node_modules/decimal.js/decimal");
+    var CrownConnection = require("CrownConnection"),
+        ModifierKeys = require("ModifierKeys"),
+
+        Decimal = require("node_modules/decimal.js/decimal");
 
 
     var TOOL_ID = "IncOrDecNumber",
@@ -30,22 +33,16 @@ define(function (require, exports, module) {
         UPDATE_UI_TIMEOUT = 150;
 
 
-    var CrownConnection = null,
+    var originCounter = 0,
 
-        originCounter = 0,
+        enabled = false,
 
         updateUIOnTouchTimeout,
 
         modifiersForCurrentUse = [],
         modifiersForCurrentUseInitUpdate = false,
         lastSelection = null,
-        numbersNegativity = {},
-
-        modKeys = {
-            altKey: false,
-            ctrlKey: false,
-            shiftKey: false
-        };
+        numbersNegativity = {};
 
     function noNegativeValue(value) {
 
@@ -275,12 +272,7 @@ define(function (require, exports, module) {
         return match;
     }
 
-    function updateUI(CrownConnection, value) {
-
-        if (!CrownConnection) {
-
-            return;
-        }
+    function updateUI(value) {
 
         var isSameModifier = modifiersForCurrentUse.every(function (modifier) {
             return modifier.MODIFIER === modifiersForCurrentUse[0].MODIFIER;
@@ -356,28 +348,44 @@ define(function (require, exports, module) {
     function getChangeByValue() {
 
         switch (true) {
-            case modKeys.shiftKey && modKeys.ctrlKey && modKeys.altKey: return 0.0001;
-            case modKeys.shiftKey && modKeys.ctrlKey: return 1000;
-            case modKeys.shiftKey && modKeys.altKey: return 0.001;
-            case modKeys.shiftKey: return 100;
-            case modKeys.ctrlKey && modKeys.altKey: return 0.01;
-            case modKeys.ctrlKey: return 10;
-            case modKeys.altKey: return 0.1;
+            case ModifierKeys.shiftKey && ModifierKeys.ctrlKey && ModifierKeys.altKey: return 0.0001;
+            case ModifierKeys.shiftKey && ModifierKeys.ctrlKey: return 1000;
+            case ModifierKeys.shiftKey && ModifierKeys.altKey: return 0.001;
+            case ModifierKeys.shiftKey: return 100;
+            case ModifierKeys.ctrlKey && ModifierKeys.altKey: return 0.01;
+            case ModifierKeys.ctrlKey: return 10;
+            case ModifierKeys.altKey: return 0.1;
             default: return 1;
         }
     }
 
-
-    exports.onModKeyChanged = function () {
+    CrownConnection.on("crown_touch_event", function (crownMsg) {
 
         clearTimeout(updateUIOnTouchTimeout);
 
-        updateUI(CrownConnection, getChangeByValue());
-    };
+        if (enabled && crownMsg.touch_state) {
 
-    exports.addModKeysState = function (_modKeys) {
+            updateUIOnTouchTimeout = setTimeout(function() {
+                updateUI(getChangeByValue());
+            }, UPDATE_UI_TIMEOUT);
+        }
+    });
 
-        modKeys = _modKeys;
+    ModifierKeys.on("change", function () {
+
+        clearTimeout(updateUIOnTouchTimeout);
+
+        if (enabled) {
+
+            updateUI(getChangeByValue());
+        }
+    });
+
+    exports.disable = function () {
+
+        clearTimeout(updateUIOnTouchTimeout);
+
+        enabled = false;
     };
 
     exports.shouldBeUsed = function () {
@@ -422,22 +430,11 @@ define(function (require, exports, module) {
         return TOOL_ID;
     };
 
-    exports.use = function (_CrownConnection) {
+    exports.use = function () {
 
-        CrownConnection = _CrownConnection;
+        enabled = true;
 
         CrownConnection.changeTool(TOOL_ID);
-    };
-
-    exports.updateUIOnTouch = function () {
-
-        clearTimeout(updateUIOnTouchTimeout);
-
-        updateUIOnTouchTimeout = setTimeout(function() {
-            updateUI(CrownConnection, getChangeByValue());
-        }, UPDATE_UI_TIMEOUT);
-
-        return updateUIOnTouchTimeout;
     };
 
     exports.update = function (crownMsg) {
@@ -618,7 +615,7 @@ define(function (require, exports, module) {
                 lastSelection = JSON.stringify(changes.map(function (change) { return [change.afterRange, change.replacement]; }));
             }
 
-            updateUI(CrownConnection, defaultChangeByValue);
+            updateUI(defaultChangeByValue);
         }
     };
 });

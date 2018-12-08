@@ -12,17 +12,8 @@ define(function (require, exports, module) {
     var TOOL_OPTION_NAME_REGEX = /^Scroll/;
 
 
-    var modKeys = {
-        altKey: false,
-        ctrlKey: false,
-        shiftKey: false
-    };
+    var ModifierKeys = require("ModifierKeys");
 
-
-    exports.addModKeysState = function (_modKeys) {
-
-        modKeys = _modKeys;
-    };
 
     exports.shouldBeUsed = function (crownMsg) {
 
@@ -40,8 +31,8 @@ define(function (require, exports, module) {
 
         var editorToScroll = editor;
 
-        if ((crownMsg.task_options.current_tool_option.match(/Inactive$/) && !modKeys.altKey) ||
-            (crownMsg.task_options.current_tool_option.match(/Active$/) && modKeys.altKey)) {
+        if ((crownMsg.task_options.current_tool_option.match(/Inactive$/) && !ModifierKeys.altKey) ||
+            (crownMsg.task_options.current_tool_option.match(/Active$/) && ModifierKeys.altKey)) {
 
             var paneId = MainViewManager.FIRST_PANE === editor._paneId ? MainViewManager.SECOND_PANE : MainViewManager.FIRST_PANE;
 
@@ -52,13 +43,13 @@ define(function (require, exports, module) {
 
             scrollDelta = crownMsg.delta ?
                 crownMsg.delta > 0 ?
-                    Math.max(5, crownMsg.delta) * (modKeys.ctrlKey ? 2 : 1.25):
-                    Math.min(-5, crownMsg.delta) * (modKeys.ctrlKey ? 2 : 1.25):
+                    Math.max(5, crownMsg.delta) * (ModifierKeys.ctrlKey ? 2 : 1.25):
+                    Math.min(-5, crownMsg.delta) * (ModifierKeys.ctrlKey ? 2 : 1.25):
                 0,
 
             dirH = !!crownMsg.task_options.current_tool_option.match(/^ScrollH/);
 
-        dirH = (dirH && !modKeys.shiftKey) || (!dirH && modKeys.shiftKey);
+        dirH = (dirH && !ModifierKeys.shiftKey) || (!dirH && ModifierKeys.shiftKey);
 
         editorToScroll.setScrollPos(
             !dirH ? currentScroll.x : Math.max(0, currentScroll.x + scrollDelta),

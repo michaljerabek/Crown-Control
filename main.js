@@ -9,7 +9,9 @@ define(function (require, exports, module) {
         NodeDomain = brackets.getModule("utils/NodeDomain");
 
     var Node = new NodeDomain("bracketscrownnode", ExtensionUtils.getModulePath(module, "Node.js")),
+
         CrownConnection = require("CrownConnection"),
+        ModifierKeys = require("ModifierKeys"),
 
         IncOrDecNumberTool = require("IncOrDecNumberTool"),
         DefaultTool = require("DefaultTool"),
@@ -26,92 +28,6 @@ define(function (require, exports, module) {
         updateUIOnTouchTimeout = null;
 
 
-    var modKeysState = {
-            altKey: false,
-            ctrlKey: false,
-            shiftKey: false
-        },
-
-        lastModKeysState = {
-            altKey: false,
-            ctrlKey: false,
-            shiftKey: false
-        },
-
-        touchState = false,
-
-        ctrlKeyCode;
-
-
-    function onKeyHandler(event) {
-
-        if ([16, 17, 18, 91, 93].indexOf(event.which) === -1) {
-
-            return;
-        }
-
-        if (touchState) {
-
-            event.preventDefault();
-        }
-
-        modKeysState.shiftKey = event.shiftKey;
-
-        if (event.type === "keydown") {
-
-            if (event.code.match(/^Alt/)) {
-
-                modKeysState.altKey = true;
-
-                if (event.code.match(/^AltRight/) && ctrlKeyCode === "ControlLeft") {
-
-                    modKeysState.ctrlKey = false;
-                }
-            }
-
-            if (event.code.match(/^Control|^OSLeft$|^OSRight$/)) {
-
-                modKeysState.ctrlKey = true;
-                ctrlKeyCode = event.code;
-            }
-        } else {
-
-            if (event.code.match(/^Alt/)) {
-
-                modKeysState.altKey = false;
-            }
-
-            if ((event.code.match(/^Control/) && (ctrlKeyCode !== "ControlRight" || event.code === "ControlRight")) || event.code.match(/^OSLeft$|^OSRight$/)) {
-
-                modKeysState.ctrlKey = false;
-                ctrlKeyCode = null;
-            }
-        }
-
-        if (lastModKeysState.altKey !== modKeysState.altKey || lastModKeysState.ctrlKey !== modKeysState.ctrlKey || lastModKeysState.shiftKey !== modKeysState.shiftKey) {
-
-            if (currentTool && currentTool.onModKeyChanged) {
-
-                currentTool.onModKeyChanged(modKeysState, touchState);
-            }
-
-            lastModKeysState.altKey = modKeysState.altKey;
-            lastModKeysState.ctrlKey = modKeysState.ctrlKey;
-            lastModKeysState.shiftKey = modKeysState.shiftKey;
-        }
-    }
-
-    window.addEventListener("keydown", onKeyHandler, true);
-    window.addEventListener("keyup", onKeyHandler, true);
-
-    TOOLS.forEach(function (tool) {
-
-        if (tool.addModKeysState) {
-
-            tool.addModKeysState(modKeysState);
-        }
-    });
-
     CrownConnection.on("close", function () {
 
         currentTool = null;
@@ -120,29 +36,20 @@ define(function (require, exports, module) {
 
     CrownConnection.on("deactivate_plugin", function () {
 
-        modKeysState.altKey = false;
-        modKeysState.ctrlKey = false;
-        modKeysState.shiftKey = false;
-
-        ctrlKeyCode = null;
-
-        if (currentTool && currentTool.onModKeyChanged) {
-
-            currentTool.onModKeyChanged(modKeysState, touchState);
-        }
+        ModifierKeys.reset();
     });
 
     CrownConnection.on("crown_touch_event", function (crownMsg) {
 
         clearTimeout(updateUIOnTouchTimeout);
 
-        touchState = !!crownMsg.touch_state;
+        if (crownMsg.touch_state) {
 
-        if (touchState) {
+            var toolFound = false;
 
-            TOOLS.some(function (tool) {
+            TOOLS.forEach(function (tool) {
 
-                if (tool.shouldBeUsed(crownMsg)) {
+                if (!toolFound && tool.shouldBeUsed(crownMsg)) {
 
                     if (currentToolId !== tool.getToolId()) {
 
@@ -153,21 +60,13 @@ define(function (require, exports, module) {
                         currentToolId = tool.getToolId();
                     }
 
-                    if (tool.updateUIOnTouch) {
+                    toolFound = true;
 
-                        updateUIOnTouchTimeout = tool.updateUIOnTouch(CrownConnection);
-                    }
-
-                    return true;
+                    return;
                 }
+
+                tool.disable();
             });
-
-        } else {
-
-            if (currentTool && currentTool.onTouchEnd) {
-
-                currentTool.onTouchEnd();
-            }
         }
     });
 

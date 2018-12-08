@@ -8,6 +8,9 @@ define(function (require, exports, module) {
     var MainViewManager = brackets.getModule("view/MainViewManager");
 
 
+    var CrownConnection = require("CrownConnection");
+
+
     var ChangeFile = require("DefaultToolChangeFileOption"),
         ResizePanes = require("DefaultToolResizePanesOption"),
         Scroll = require("DefaultToolScrollOption");
@@ -21,47 +24,26 @@ define(function (require, exports, module) {
 
     var OPTIONS = [Scroll, ChangeFile, ResizePanes];
 
-    var usedOption = null;
+
+    var enabled = false,
+
+        usedOption = null;
 
 
-    var CrownConnection = null,
+    CrownConnection.on("crown_touch_event", function (crownMsg) {
 
-        modKeys = {
-            altKey: false,
-            ctrlKey: false,
-            shiftKey: false
-        };
+        if (enabled && !crownMsg.touch_state) {
 
-    exports.addModKeysState = function (_modKeys) {
+            if (usedOption && usedOption.onTouchEnd) {
 
-        modKeys = _modKeys;
-
-        OPTIONS.forEach(function (option) {
-
-            if (option.addModKeysState) {
-
-                option.addModKeysState(modKeys);
+                usedOption.onTouchEnd();
             }
-        });
-    };
-
-    exports.onModKeyChanged = function () {
-
-        OPTIONS.forEach(function (option) {
-
-            if (option.onModKeyChanged) {
-
-                option.onModKeyChanged();
-            }
-        });
-    };
-
-    exports.onTouchEnd = function () {
-
-        if (usedOption && usedOption.onTouchEnd) {
-
-            usedOption.onTouchEnd();
         }
+    });
+
+    exports.disable = function () {
+
+        enabled = false;
     };
 
     exports.shouldBeUsed = function () {
@@ -78,9 +60,9 @@ define(function (require, exports, module) {
                 SPLIT_VIEW_ROWS_TOOL_ID;
     };
 
-    exports.use = function (_CrownConnection) {
+    exports.use = function () {
 
-        CrownConnection = _CrownConnection;
+        enabled = true;
 
         CrownConnection.changeTool(exports.getToolId());
     };
