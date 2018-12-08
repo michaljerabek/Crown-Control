@@ -51,13 +51,15 @@ define(function (require, exports, module) {
             return;
         }
 
-        var resizeDelta = crownMsg.delta ?
+        var scheme = MainViewManager.getLayoutScheme(),
+
+            resizeDelta = crownMsg.delta ?
                 crownMsg.delta > 0 ?
                     Math.max(5, crownMsg.delta):
                     Math.min(-5, crownMsg.delta):
                 0;
 
-        if ($editorHolder.hasClass("split-vertical")) {
+        if (scheme.columns > 1) {
 
             var editorWidth = $editorHolder.width(),
                 activePaneWidth = parseFloat($firstPane.css("width")) + resizeDelta;

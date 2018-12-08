@@ -11,7 +11,6 @@ define(function (require, exports, module) {
     var Node = new NodeDomain("crowncontrolnodedomain", ExtensionUtils.getModulePath(module, "Node.js")),
 
         CrownConnection = require("CrownConnection"),
-        ModifierKeys = require("ModifierKeys"),
 
         IncOrDecNumberTool = require("IncOrDecNumberTool"),
         DefaultTool = require("DefaultTool"),
@@ -32,11 +31,6 @@ define(function (require, exports, module) {
 
         currentTool = null;
         currentToolId = "";
-    });
-
-    CrownConnection.on("deactivate_plugin", function () {
-
-        ModifierKeys.reset();
     });
 
     CrownConnection.on("crown_touch_event", function (crownMsg) {

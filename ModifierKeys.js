@@ -27,6 +27,11 @@ define(function (require, exports, module) {
         touchState = !!crownMsg.touch_state;
     });
 
+    CrownConnection.on("deactivate_plugin", function () {
+
+        exports.reset();
+    });
+
     function possibleChange() {
 
         if (lastModKeysState.altKey !== exports.altKey || lastModKeysState.ctrlKey !== exports.ctrlKey || lastModKeysState.shiftKey !== exports.shiftKey) {

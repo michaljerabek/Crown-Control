@@ -44,12 +44,14 @@ define(function (require, exports, module) {
 
         } else {
 
-            var $editorHolder = $("#editor-holder"),
+            var scheme = MainViewManager.getLayoutScheme(),
+
+                $editorHolder = $("#editor-holder"),
                 $panes = $editorHolder.find(".view-pane"),
                 $firstPane = $panes.first(),
                 $secondPane = $panes.last();
 
-            if ($editorHolder.hasClass("split-vertical")) {
+            if (scheme.columns > 1) {
 
                 var editorWidth = $editorHolder.width(),
                     activePaneWidth = (parseFloat($firstPane.css("width")) / editorWidth) * 100;
