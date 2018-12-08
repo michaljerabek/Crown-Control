@@ -1,4 +1,4 @@
-# Crown Control — Logitech Crown (Craft) integration for Brackets
+# Crown Control — Logitech Crown (Craft) integration for [Brackets](http://brackets.io/)
 
 *Probably won't work on macOS.*
 
@@ -6,17 +6,17 @@
 
 **This is not an official way to install custom plugin for Logitech Options. But it works.** 
 
-After you have installed the extention from [Extention Manager](https://github.com/adobe/brackets/wiki/Brackets-Extensions):
+After you have [installed the extension](https://github.com/adobe/brackets/wiki/Brackets-Extensions):
 
 1. Open Logitech Options and select your keyboard (Craft).
 2. Click on `All Applications` and select `Brackets`.
 3. Click on `More` > `Software` and enable `Developer Mode`.
-4. Open folder with extentions for Brackets (`Help` > `Show Extenstions Folder`).
+4. Open folder with extensions for Brackets (`Help` > `Show Extensions Folder`).
 5. Copy `9df01287-806d-4292-9ee4-2c6e477fee55` folder to `C:\ProgramData\Logishrd\LogiOptionsPlugins` (folder `LogiOptionsPlugins` have to be created).
 6. Go to `C:\Users\[YOUR_ACCOUNT]\AppData\Roaming\Logishrd\LogiOptions`.
 7. Open `apptable.xml` and find `<profile/>` for Brackets.
 8. Change `<id/>` to `9df01287-806d-4292-9ee4-2c6e477fee55`. (If there are other profiles for Brackets, remove them.)
-9. Copy `9df01287-806d-4292-9ee4-2c6e477fee55.xml` from the extention folder to `C:\Users\[YOUR_ACCOUNT]\AppData\Roaming\Logishrd\LogiOptions\devices\6b350\Profiles`.
+9. Copy `9df01287-806d-4292-9ee4-2c6e477fee55.xml` from the extension folder to `C:\Users\[YOUR_ACCOUNT]\AppData\Roaming\Logishrd\LogiOptions\devices\6b350\Profiles`.
 10. Kill all processes in Task Manager related to Logitech Options and close Brackets (or restart your computer).
 11. Run Logitech Options and Brackets.
 
