@@ -1,4 +1,4 @@
-# BracketsCrown — Logitech Crown (Craft) integration for Brackets
+# Crown Control — Logitech Crown (Craft) integration for Brackets
 
 *Probably won't work on macOS.*
 

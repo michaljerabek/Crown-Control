@@ -29,7 +29,7 @@ define(function (require, exports, module) {
 
         if (!reconnecting) {
 
-            console.log("BRACKETSCROWN: reconnect");
+            console.log("CROWNCONTROL: reconnect");
 
             ws = null;
 
@@ -61,7 +61,7 @@ define(function (require, exports, module) {
             return;
         }
 
-        //console.info("BRACKETSCROWN: create");
+        //console.info("CROWNCONTROL: create");
 
         reconnecting = true;
 
@@ -69,7 +69,7 @@ define(function (require, exports, module) {
 
         ws.onopen = function (event) {
 
-            //console.info("BRACKETSCROWN: open");
+            //console.info("CROWNCONTROL: open");
 
             clearInterval(reconnectTimeout);
 
@@ -86,7 +86,7 @@ define(function (require, exports, module) {
 
             var jsonObj = JSON.parse(msg.data);
 
-            //console.info("BRACKETSCROWN: " + jsonObj.message_type);
+            //console.info("CROWNCONTROL: " + jsonObj.message_type);
 
             eventHandlers.message.forEach(function (eventHandlerFn) {
                 eventHandlerFn(msg, jsonObj);
@@ -109,7 +109,7 @@ define(function (require, exports, module) {
 
         ws.onclose = function (event) {
 
-            console.info("BRACKETSCROWN: close");
+            console.info("CROWNCONTROL: close");
             console.log(event);
 
             reconnecting = false;
@@ -123,7 +123,7 @@ define(function (require, exports, module) {
 
         ws.onerror = function (event) {
 
-            console.error("BRACKETSCROWN: error");
+            console.error("CROWNCONTROL: error");
             console.log(event);
 
             reconnecting = false;

@@ -12,10 +12,10 @@ define(function (require, exports, module) {
         KeyBindingManager = brackets.getModule("command/KeyBindingManager");
 
 
-    var switchPaneCommand = "mjerabek.cz.bracketscrown.switch-pane-focus",
-        switchPaneSizeCommand = "mjerabek.cz.bracketscrown.switch-pane-focus-and-toggle-size",
-        switchPaneTypeCommand = "mjerabek.cz.bracketscrown.switch-split-view-type",
-        closeSplitViewCommand = "mjerabek.cz.bracketscrown.close-split-view";
+    var switchPaneCommand = "mjerabek.cz.crowncontrol.switch-pane-focus",
+        switchPaneSizeCommand = "mjerabek.cz.crowncontrol.switch-pane-focus-and-toggle-size",
+        switchPaneTypeCommand = "mjerabek.cz.crowncontrol.switch-split-view-type",
+        closeSplitViewCommand = "mjerabek.cz.crowncontrol.close-split-view";
 
 
     var FKEY = "F9";

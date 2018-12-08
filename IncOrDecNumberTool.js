@@ -458,7 +458,7 @@ define(function (require, exports, module) {
 
         var selections = editor.getSelections(),
 
-            origin = "bracketscrown.incordecnumber" + originCounter++,
+            origin = "crowncontrol.incordecnumber" + originCounter++,
 
             inlineTextPositionChange = {},
 

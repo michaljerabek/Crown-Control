@@ -2,7 +2,7 @@
 
     const process = require("process");
 
-    const DOMAIN_NAME = "bracketscrownnode";
+    const DOMAIN_NAME = "crowncontrolnodedomain";
 
     let domainManager;
 

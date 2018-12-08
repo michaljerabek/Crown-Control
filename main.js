@@ -8,7 +8,7 @@ define(function (require, exports, module) {
     var ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         NodeDomain = brackets.getModule("utils/NodeDomain");
 
-    var Node = new NodeDomain("bracketscrownnode", ExtensionUtils.getModulePath(module, "Node.js")),
+    var Node = new NodeDomain("crowncontrolnodedomain", ExtensionUtils.getModulePath(module, "Node.js")),
 
         CrownConnection = require("CrownConnection"),
         ModifierKeys = require("ModifierKeys"),

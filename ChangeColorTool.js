@@ -522,7 +522,7 @@ define(function (require, exports, module) {
 
         var selections = editor.getSelections(),
 
-            origin = "bracketscrown.changecolor" + originCounter++,
+            origin = "crowncontrol.changecolor" + originCounter++,
 
             inlineTextPositionChange = {},
 
