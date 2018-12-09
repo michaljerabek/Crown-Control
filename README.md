@@ -2,7 +2,7 @@
 
 *Probably won't work on macOS.*
 
-## Installation
+## Installation Instructions
 
 **This is not an official way to install custom plugin for Logitech Options. But it works.** 
 
@@ -28,11 +28,9 @@ On macOS you can use official method, but it may not work (it didn't work for me
 4. Click on `All Applications` > `Brackets` and then `Crown` > `Press` and set it to `F9`.
 5. Try it and if it works, let me know.
 
-## How to use
+## How To Use
 
-*This is still in experimental state. (I'm still trying to find out what could be useful.)*
-
-*You have to learn to use it, but if you do, controlling Brackets only from keyboard should be easier.*
+*This is still in experimental state.*
 
 ### Press (Crown)
 Switches currently active pane or turns on *Split View*.
@@ -42,7 +40,7 @@ Switches currently active pane or turns on *Split View*.
 
 **It requires `F9` and `F9 + MODIFIER_KEYS` shortcuts to be available.**
 
-### Turn: Default context
+### Turn: Default
 
 Available options:
 
