@@ -6,7 +6,26 @@ define(function (require, exports, module) {
     "use strict";
 
     var ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
-        NodeDomain = brackets.getModule("utils/NodeDomain");
+        NodeDomain = brackets.getModule("utils/NodeDomain"),
+        FileSystem = brackets.getModule("filesystem/FileSystem"),
+        ExtensionLoader = brackets.getModule("utils/ExtensionLoader"),
+        Dialogs = brackets.getModule("widgets/Dialogs");
+
+
+    var PATH = ExtensionLoader.getUserExtensionPath() + "/mjerabek.cz.crowncontrol";
+
+
+    var file = FileSystem.getFileForPath(PATH + "/install_msg");
+
+    brackets.fs.readFile(file.fullPath, "utf-8", function (code) {
+
+        if (code === brackets.fs.ERR_NOT_FOUND) {
+
+            Dialogs.showModalDialog("crown-control", "Crown Control", "To finish installation, follow <a href='https://github.com/michaljerabek/crowncontrol'>instructions on GitHub</a> or read README.md file in the extenstion folder.");
+
+            file.write("");
+        }
+    });
 
     var Node = new NodeDomain("crowncontrolnodedomain", ExtensionUtils.getModulePath(module, "Node.js")),
 
