@@ -1,5 +1,5 @@
 {
-  "name": "mjerabek.cz.crowncontrol",
+  "name": "Crown Control",
   "version": "1.0.0",
   "description": "Logitech Crown (Craft) integration for Brackets. Probably won't work on macOS. READ INSTALLATION INSTRUCTIONS ON GITHUB.",
   "main": "main.js",
