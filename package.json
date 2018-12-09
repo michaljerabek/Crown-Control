@@ -1,7 +1,7 @@
 {
   "name": "mjerabek.cz.crowncontrol",
   "version": "1.0.0",
-  "description": "Logitech Crown integration for Brackets.",
+  "description": "Logitech Crown (Craft) integration for Brackets. Probably won't work on macOS. READ INSTALLATION INSTRUCTIONS ON GITHUB.",
   "main": "main.js",
   "dependencies": {
     "decimal.js": "^10.0.1",
