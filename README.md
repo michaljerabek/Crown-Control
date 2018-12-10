@@ -6,13 +6,13 @@
 
 **This is not an official way to install custom plugin for Logitech Options. But it works.** 
 
-After you have [installed the extension](https://github.com/adobe/brackets/wiki/Brackets-Extensions):
+On Windows: After you have [installed the extension](https://github.com/adobe/brackets/wiki/Brackets-Extensions):
 
 1. Open Logitech Options and select your keyboard (Craft).
 2. Click on `All Applications` and select `Brackets`.
 3. Click on `More` > `Software` and enable `Developer Mode`.
 4. Open folder with extensions for Brackets (`Help` > `Show Extensions Folder`).
-5. Copy `9df01287-806d-4292-9ee4-2c6e477fee55` folder to `C:\ProgramData\Logishrd\LogiOptionsPlugins` (folder `LogiOptionsPlugins` have to be created).
+5. Copy `9df01287-806d-4292-9ee4-2c6e477fee55` folder to `C:\ProgramData\Logishrd\LogiOptionsPlugins` (folder `LogiOptionsPlugins` has to be created).
 6. Go to `C:\Users\[YOUR_ACCOUNT]\AppData\Roaming\Logishrd\LogiOptions`.
 7. Open `apptable.xml` and find `<profile/>` for Brackets.
 8. Change `<id/>` to `9df01287-806d-4292-9ee4-2c6e477fee55`. (If there are other profiles for Brackets, remove them.)
@@ -20,7 +20,7 @@ After you have [installed the extension](https://github.com/adobe/brackets/wiki/
 10. Kill all processes in Task Manager related to Logitech Options and close Brackets (or restart your computer).
 11. Run Logitech Options and Brackets.
 
-On macOS you can use official method, but it may not work (it didn't work for me, but I tried that only in VirtualBox):
+On macOS you can use the official method, but it may not work (it didn't work for me, but I tried it only in VirtualBox):
 
 1. Copy `9df01287-806d-4292-9ee4-2c6e477fee55` folder from the extenstion folder to `~/Library/Application Support/Logitech/Logitech Options/Plugins`.
 2. Enable `Developer Mode` in Logitech Options (`Logitech Options` > `Craft` > `More` > `Software`).
