@@ -97,8 +97,8 @@ div::after {
     
     martin-left: -10px;
     
-    border: 10px solid;
-    border-color: transparent transparent white transparent;
+    border: 10px solid transparent;
+    border-color-bottom: white;
 }
 /* You can select 10px and -10px values and resize the triangle 
  * by turning the Crown. If you increase the border to 12px, 
