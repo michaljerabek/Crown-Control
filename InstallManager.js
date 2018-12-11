@@ -48,7 +48,7 @@ define(function (require, exports, module) {
                     Dialogs.showModalDialog(
                         "crown-control",
                         "Crown Control",
-                        "To finish installation, follow <a href='" + LINK_TO_INSTRUCTIONS + "'>instructions on GitHub</a> or in the README.md file in the <a href='#' " + COMMAND_TO_OPEN_EXT_FOLDER + ">extension folder</a>. (If this is an update from 1.0.0 to 1.0.1, ignore this message.)"
+                        "To finish installation, follow <a href='" + LINK_TO_INSTRUCTIONS + "'>instructions on GitHub</a> or in the README.md file in the <a href='#' " + COMMAND_TO_OPEN_EXT_FOLDER + ">extension folder</a>."
                     );
 
                     extensionDOTjsonFile.write(JSON.stringify({
