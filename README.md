@@ -30,7 +30,7 @@ On macOS you can use the official method, but it may not work (it didn't work fo
 
 ## Update Instructions
 
-*This is necessary only if the profile has changed.*
+*This is necessary only if the profile has changed. You should be informed about that after an update.*
 
 On Windows: 
 
