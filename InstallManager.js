@@ -43,7 +43,7 @@ define(function (require, exports, module) {
                     extensionObj = extContent ? JSON.parse(extContent) : {},
                     manifestObj = JSON.parse(mftContent);
 
-                if (extCode === brackets.fs.ERR_NOT_FOUND) {//first install
+                if (extCode !== brackets.fs.NO_ERROR) {//first install
 
                     Dialogs.showModalDialog(
                         "crown-control",
@@ -56,7 +56,7 @@ define(function (require, exports, module) {
                         profileVersion: manifestObj.info.version
                     }));
 
-                } else if (extCode === brackets.fs.NO_ERROR) {//update
+                } else {//update
 
                     if (extensionObj.version !== packageObj.version && extensionObj.profileVersion !== manifestObj.info.version) {//update requires to reinstall profile
 
