@@ -87,6 +87,7 @@ define(function (require, exports, module) {
             var jsonObj = JSON.parse(msg.data);
 
             //console.info("CROWNCONTROL: " + jsonObj.message_type);
+            //console.log(jsonObj);
 
             eventHandlers.message.forEach(function (eventHandlerFn) {
                 eventHandlerFn(msg, jsonObj);

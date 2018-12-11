@@ -22,11 +22,31 @@ On Windows: After you have [installed the extension](https://github.com/adobe/br
 
 On macOS you can use the official method, but it may not work (it didn't work for me, but I tried it only in VirtualBox):
 
-1. Copy `9df01287-806d-4292-9ee4-2c6e477fee55` folder from the extenstion folder to `~/Library/Application Support/Logitech/Logitech Options/Plugins`.
+1. Copy `9df01287-806d-4292-9ee4-2c6e477fee55` folder from the extension folder to `~/Library/Application Support/Logitech/Logitech Options/Plugins`.
 2. Enable `Developer Mode` in Logitech Options (`Logitech Options` > `Craft` > `More` > `Software`).
 3. Click on `All Applications` and install the profile.
 4. Click on `All Applications` > `Brackets` and then `Crown` > `Press` and set it to `F9`.
 5. Try it and if it works, let me know.
+
+## Update Instructions
+
+*This is necessary only if the profile has changed.*
+
+On Windows: 
+
+1. Open folder with extensions for Brackets (`Help` > `Show Extensions Folder`).
+2. Copy `9df01287-806d-4292-9ee4-2c6e477fee55` folder to `C:\ProgramData\Logishrd\LogiOptionsPlugins` (rewrite previous files).
+3. Kill all processes in Task Manager related to Logitech Options and close Brackets (or restart your computer).
+4. Run Logitech Options and Brackets.
+
+On macOS:
+
+1. In Logitech Options click on `All Applications`.
+2. Remove profile for `Brackets` (click on cross icon).
+3. Copy `9df01287-806d-4292-9ee4-2c6e477fee55` folder from the extension folder to `~/Library/Application Support/Logitech/Logitech Options/Plugins` (rewrite previous files).
+4. Click on `All Applications` and install the profile.
+5. Click on `All Applications` > `Brackets` and then `Crown` > `Press` and set it to `F9` (may not be necessary).
+
 
 ## How To Use
 
