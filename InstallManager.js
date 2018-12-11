@@ -14,7 +14,7 @@ define(function (require, exports, module) {
         APP_SUPPORT_DIR = brackets.app.getApplicationSupportDirectory(),
         FILE_NAME = "mjerabek.cz.crowncontrol.json",
 
-        LINK_TO_INSTRUCTIONS = "https://github.com/michaljerabek/crowncontrol",
+        LINK_TO_INSTRUCTIONS = "https://github.com/michaljerabek/Crown-Control",
         COMMAND_TO_OPEN_EXT_FOLDER = "onclick='window.__mjerabek_cz_crowncontrol__open_extention_folder(event);'";
 
 
