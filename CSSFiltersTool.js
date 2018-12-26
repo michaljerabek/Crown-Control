@@ -18,7 +18,7 @@ define(function (require, exports, module) {
         TEST_REGEX = /(?:-[a-zA-Z\-]+-)?filter([: ]|\s*$)(?:(?:\s*(?:none|initial|inherit|unset))|(?:\s*[a-z\-]+\(([^)]*)\)\s*\)?\s*)*)/gi,
         TEST_NUMBER_REGEX = /-?\d*\.?\d+/g,
 
-        CLEAR_LAST_SELECTION_TIMEOUT = 1500,
+        CLEAR_LAST_SELECTION_TIMEOUT = 1000,
 
         UPDATE_UI_TIMEOUT = 150;
 
@@ -61,6 +61,8 @@ define(function (require, exports, module) {
 
         switch (unit) {
 
+            case "grad":
+            case "deg":
             case "%":
 
                 switch (true) {
@@ -87,6 +89,7 @@ define(function (require, exports, module) {
                     default: return 1;
                 }
 
+            case "rad":
             case "in":
             case "cm":
             case "pc":
@@ -153,7 +156,7 @@ define(function (require, exports, module) {
             case "brightness": return "BrightnessCSSFilter";
             case "contrast": return "ContrastCSSFilter";
             case "saturate": return "SaturateCSSFilter";
-            case "grayscale": return "GrayscaleCSSFilter";
+            case "hue-rotate": return "HueRotateCSSFilter";
             case "opacity": return "OpacityCSSFilter";
             case "blur": return "BlurCSSFilter";
             default: return null;
@@ -166,7 +169,7 @@ define(function (require, exports, module) {
             case "brightness": return "100%";
             case "contrast": return "100%";
             case "saturate": return "100%";
-            case "grayscale": return "0%";
+            case "hue-rotate": return "0deg";
             case "opacity": return "100%";
             case "blur": return "0px";
             default: return null;
@@ -179,7 +182,7 @@ define(function (require, exports, module) {
             case "BrightnessCSSFilter": return "brightness";
             case "ContrastCSSFilter": return "contrast";
             case "SaturateCSSFilter": return "saturate";
-            case "GrayscaleCSSFilter": return "grayscale";
+            case "HueRotateCSSFilter": return "hue-rotate";
             case "OpacityCSSFilter": return "opacity";
             case "BlurCSSFilter": return "blur";
             default: return null;
@@ -208,10 +211,6 @@ define(function (require, exports, module) {
             case "saturate":
 
                 return Math.max(0, value);
-
-            case "grayscale":
-
-                return unit === "%" ? Math.min(Math.max(0, value), 100) : Math.min(Math.max(0, value), 1);
 
             case "opacity":
 
@@ -248,7 +247,7 @@ define(function (require, exports, module) {
 
                 return unit === "%" ? value === 100 : value === 1;
 
-            case "grayscale":
+            case "hue-rotate":
 
                 return value === 0;
 
@@ -260,7 +259,7 @@ define(function (require, exports, module) {
 
                 return value === 0;
 
-            default: return value;
+            default: return false;
         }
     }
 
@@ -312,6 +311,16 @@ define(function (require, exports, module) {
             value = (value ? value[0] || "0" : "0").trim().replace(/^\(|\)$/g, "");
 
             var number = value.match(/-?[0-9.]+/i) ? parseFloat(value.match(/-?[0-9.]+/i)[0]) : NaN;
+
+            console.log({
+                filter: filter,
+                name: name,
+                crownOption: getCrownOption(name),
+                value: value,
+                number: number,
+                decimalNumber: isNaN(number) ? null: new Decimal(value.match(/-?[0-9.]+/i)[0]),
+                unit: value ? value.match(/-?[0-9.]+[a-z%]+$/i) ? value.match(/[a-z%]+$/i)[0] : "" : ""
+            });
 
             return {
                 filter: filter,

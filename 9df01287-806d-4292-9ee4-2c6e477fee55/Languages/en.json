@@ -81,8 +81,8 @@
             "value": "Saturate"
         },
         {
-            "ID": "GrayscaleCSSFilter",
-            "value": "Grayscale"
+            "ID": "HueRotateCSSFilter",
+            "value": "Hue Rotate"
         },
         {
             "ID": "OpacityCSSFilter",

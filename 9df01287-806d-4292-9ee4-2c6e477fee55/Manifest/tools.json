@@ -28,8 +28,8 @@
                 },
                 {
                     "index": 3,
-                    "name": "GrayscaleCSSFilter",
-                    "image_file_path": "increase.png",
+                    "name": "HueRotateCSSFilter",
+                    "image_file_path": "hue.png",
                     "enabled": true,
                     "ratchet_enabled": true
                 },
