@@ -69,6 +69,30 @@
             "value": "Alpha"
         },
         {
+            "ID": "BrightnessCSSFilter",
+            "value": "Brightness"
+        },
+        {
+            "ID": "ContrastCSSFilter",
+            "value": "Contrast"
+        },
+        {
+            "ID": "SaturateCSSFilter",
+            "value": "Saturate"
+        },
+        {
+            "ID": "GrayscaleCSSFilter",
+            "value": "Grayscale"
+        },
+        {
+            "ID": "OpacityCSSFilter",
+            "value": "Opacity"
+        },
+        {
+            "ID": "BlurCSSFilter",
+            "value": "Blur"
+        },
+        {
             "ID": "changetoolvalue",
             "value": "Contextual"
         },

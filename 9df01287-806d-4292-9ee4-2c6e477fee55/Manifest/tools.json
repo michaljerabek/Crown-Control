@@ -2,6 +2,54 @@
     "GUID": "9df01287-806d-4292-9ee4-2c6e477fee55",
     "tools": [
         {
+            "name": "CSSFilters",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "BrightnessCSSFilter",
+                    "image_file_path": "lightness.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 1,
+                    "name": "ContrastCSSFilter",
+                    "image_file_path": "increase.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 2,
+                    "name": "SaturateCSSFilter",
+                    "image_file_path": "saturation.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 3,
+                    "name": "GrayscaleCSSFilter",
+                    "image_file_path": "increase.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 4,
+                    "name": "OpacityCSSFilter",
+                    "image_file_path": "opacity.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 5,
+                    "name": "BlurCSSFilter",
+                    "image_file_path": "increase.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                }
+            ]
+        },
+        {
             "name": "IncOrDecNumber",
             "enabled": true,
             "tool_options": [

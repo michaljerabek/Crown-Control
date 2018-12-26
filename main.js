@@ -16,6 +16,7 @@ define(function (require, exports, module) {
 
         CrownConnection = require("CrownConnection"),
 
+        CSSFiltersTool = require("CSSFiltersTool"),
         IncOrDecNumberTool = require("IncOrDecNumberTool"),
         DefaultTool = require("DefaultTool"),
         ChangeColorTool = require("ChangeColorTool");
@@ -23,7 +24,7 @@ define(function (require, exports, module) {
     require("PaneSwitcher");
 
 
-    var TOOLS = [ChangeColorTool, IncOrDecNumberTool, DefaultTool];
+    var TOOLS = [ChangeColorTool, CSSFiltersTool, IncOrDecNumberTool, DefaultTool];
 
 
     var currentTool = null,
