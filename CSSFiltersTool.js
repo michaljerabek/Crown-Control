@@ -263,31 +263,76 @@ define(function (require, exports, module) {
         }
     }
 
-    function convertDataToFilterDef(currentText, filterData) {
+    function clearChangedProp() {
 
-        var prop = currentText.match(/^(?:-[a-zA-Z\-]+-)?filter:?/gi)[0],
+        if (filtersData) {
 
-            value = filterData.map(function (filter) {
+            var f;
 
-                if (isDefaultFilterValue(filter.name, filter.number, filter.unit)) {
+            for (f in filtersData) {
 
-                    return null;
+                if (filtersData.hasOwnProperty(f)) {
+
+                    filtersData[f].forEach(function (filter) {
+                        filter.changed = false;
+                    });
+                }
+            }
+        }
+    }
+
+    function convertDataToFilterDefData(currentText, filterData) {
+
+        var prop = currentText.match(/^(?:-[a-zA-Z\-]+-)?filter:?/gi)[0] + " ",
+
+            selection = {
+                start: prop.length - 1,
+                end: prop.length
+            },
+
+            value = prop,
+
+            changedAdded = false;
+
+        filterData.forEach(function (filter) {
+
+            if (isDefaultFilterValue(filter.name, filter.number, filter.unit)) {
+
+                if (!changedAdded) {
+
+                    selection.start = value.length - 1;
+                    selection.end = value.length - 1;
                 }
 
-                return filter.crownOption ? filter.name + "(" + filter.number + filter.unit + ")" : filter.filter;
+                changedAdded = changedAdded || filter.changed;
 
-            }).filter(function (filter) {
+                return;
+            }
 
-                return filter !== null;
+            var filterDef = filter.crownOption ? filter.name + "(" + filter.number + filter.unit + ")" : filter.filter;
 
-            }).join(" ");
+            if (!changedAdded) {
 
-        if (!value.trim().length) {
+                selection.start = value.length - 1;
+                selection.end = selection.start + (filterDef.length + 1);
+            }
 
-            value = "none";
+            value += filterDef + " ";
+
+            changedAdded = changedAdded || filter.changed;
+        });
+
+        if (value === prop) {
+
+            value += "none";
+
+            selection.end += (4 + 1);
         }
 
-        return prop + " " + value;
+        return {
+            text: value.trim(),
+            selection: selection
+        };
     }
 
     function parseFilterData(cssText) {
@@ -311,16 +356,6 @@ define(function (require, exports, module) {
             value = (value ? value[0] || "0" : "0").trim().replace(/^\(|\)$/g, "");
 
             var number = value.match(/-?[0-9.]+/i) ? parseFloat(value.match(/-?[0-9.]+/i)[0]) : NaN;
-
-            console.log({
-                filter: filter,
-                name: name,
-                crownOption: getCrownOption(name),
-                value: value,
-                number: number,
-                decimalNumber: isNaN(number) ? null: new Decimal(value.match(/-?[0-9.]+/i)[0]),
-                unit: value ? value.match(/-?[0-9.]+[a-z%]+$/i) ? value.match(/[a-z%]+$/i)[0] : "" : ""
-            });
 
             return {
                 filter: filter,
@@ -439,6 +474,8 @@ define(function (require, exports, module) {
             return;
         }
 
+        clearChangedProp();
+
         var selections = editor.getSelections(),
 
             origin = "crowncontrol.cssfilter" + originCounter++,
@@ -552,19 +589,35 @@ define(function (require, exports, module) {
                         filterData.decimalNumber = decimalModified;
                     }
 
+                    filterData.changed = true;
+
                     return true;
                 }
             });
 
-            updatedText = convertDataToFilterDef(currentText, filtersData[s]);
+            var filterDefData = convertDataToFilterDefData(currentText, filtersData[s]);
+
+            updatedText = filterDefData.text;
 
             updatedTextRange.end.ch = currentTextRange.start.ch + updatedText.length + inlineTextPositionChange[currentLineNumber];
 
             inlineTextPositionChange[currentLineNumber] += updatedText.length - currentText.length;
 
+            var afterSelection = {
+                start: {
+                    line: updatedTextRange.start.line,
+                    ch: updatedTextRange.start.ch + filterDefData.selection.start
+                },
+                end: {
+                    line: updatedTextRange.end.line,
+                    ch: updatedTextRange.start.ch + filterDefData.selection.end
+                }
+            };
+
             return {
                 currentRange: currentTextRange,
                 afterRange: updatedTextRange,
+                afterSelection: afterSelection,
                 replacement: updatedText
             };
 
@@ -583,10 +636,9 @@ define(function (require, exports, module) {
 
             editor.document.doMultipleEdits(edits, origin);
 
-            editor.setSelections(changes.map(function (change) { return change.afterRange; }), undefined, undefined, origin);
+            editor.setSelections(changes.map(function (change) { return change.afterSelection; }), undefined, undefined, origin);
 
             lastSelection = JSON.stringify(changes.map(function (change) { return [change.afterRange, change.replacement]; }));
-
 
 //            if (changes.length === 1) {
 //
