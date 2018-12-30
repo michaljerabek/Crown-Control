@@ -116,38 +116,74 @@ define(function (require, exports, module) {
         }
     }
 
-    function allChangingValuesAreTheSame(option, changes) {
+    function getUpdateToolData() {
 
-        var firstFormat = changes[0].format.replace(/a$/, "").replace(/#|name/, "rgb");
+        var updateTool = {
+            name: "",
+            value: ""
+        };
 
-        return changes.every(function (change) {
+        if (filtersData) {
 
-            var comparingSameFormats = firstFormat === change.format.replace(/a$/, "").replace(/#[0-9]*|name/, "rgb");
+            filtersData[0].some(function (filter) {
 
-            switch (option) {
+                if (filter.changed) {
 
-                case "Hue":
+                    updateTool.name = filter.crownOption;
 
-                    return (comparingSameFormats && change.updatedHsl.h === changes[0].updatedHsl.h) ||
-                        (!comparingSameFormats && Math.abs(change.updatedHsl.h - changes[0].updatedHsl.h) <= 1);
+                    updateTool.value = String(filter.number);
 
-                case "Saturation":
+                    return true;
+                }
+            });
+        }
 
-                    return (comparingSameFormats && change.updatedHsl.s === changes[0].updatedHsl.s) ||
-                        (!comparingSameFormats && Math.abs(change.updatedHsl.s - changes[0].updatedHsl.s) <= 1);
+        return [updateTool];
+    }
 
-                case "Lightness":
+    function allChangingValuesAndUnitsAreTheSame() {
 
-                    return (comparingSameFormats && change.updatedHsl.l === changes[0].updatedHsl.l) ||
-                        (!comparingSameFormats && Math.abs(change.updatedHsl.l - changes[0].updatedHsl.l) <= 1);
+        var same = true;
 
-                case "Alpha":
+        if (filtersData) {
 
-                    return change.updatedHsl.a === changes[0].updatedHsl.a;
+            var firstValue = null,
+                firstUnit,
 
-                default: return false;
+                f;
+
+            for (f in filtersData) {
+
+                if (filtersData.hasOwnProperty(f)) {
+
+                    filtersData[f].some(function (filter) {
+
+                        if (filter.changed) {
+
+                            if (firstValue === null) {
+
+                                firstValue = !filter.unit ? filter.decimalNumber.mul(100).toNumber() : filter.number;
+
+                                firstUnit = filter.unit;
+
+                                return true;
+                            }
+
+                            var value = !filter.unit ? filter.decimalNumber.mul(100).toNumber() : filter.number;
+
+                            if ((value !== firstValue) || (firstUnit !== filter.unit && (firstUnit !== "%" && filter.unit !== "") && (firstUnit !== "" && filter.unit !== "%"))) {
+
+                                same = false;
+                            }
+
+                            return true;
+                        }
+                    });
+                }
             }
-        });
+        }
+
+        return same;
     }
 
     function getCrownOption(filterName) {
@@ -640,21 +676,14 @@ define(function (require, exports, module) {
 
             lastSelection = JSON.stringify(changes.map(function (change) { return [change.afterRange, change.replacement]; }));
 
-//            if (changes.length === 1) {
-//
-//                updateUI(getUpdateToolFromHsl(changes[0].updatedHsl, option));
-//
-//            } else {
-//
-//                if (allChangingValuesAreTheSame(option, changes)) {
-//
-//                    updateUI(getUpdateToolFromHsl(changes[0].updatedHsl, option));
-//
-//                } else {
-//
-//                    updateUI([{name: option, value: ""}]);
-//                }
-//            }
+            if (changes.length === 1 || allChangingValuesAndUnitsAreTheSame()) {
+
+                updateUI(getUpdateToolData());
+
+            } else {
+
+                updateUI([{name: option, value: ""}]);
+            }
         }
     };
 });
