@@ -15,15 +15,14 @@ define(function (require, exports, module) {
 
     var TOOL_ID = "ChangeColor",
 
-        TEST_NAME_REGEX = new RegExp(Object.keys(tinycolor.names).sort(function (a, b) {
+        TEST_NAME_REGEX = new RegExp("\\b" + Object.keys(tinycolor.names).sort(function (a, b) {
                 return b.length - a.length;
-            }).join("|") + "|transparent", "gi"),
+            }).join("\\b|\\b") + "|\\btransparent\\b", "gi"),
         TEST_HEX_REGEX = /#[0-9a-f]{8}|#[0-9a-f]{6}|#[0-9a-f]{4}|#[0-9a-f]{3}/gi,
         TEST_RGB_HSL_REGEX = /rgba?\([0-9, %.]+\)|hsla?\([0-9, %.\-]+\)/gi,
         TEST_NUMBER_REGEX = /-?\d*\.?\d+/g,
 
         UPDATE_UI_TIMEOUT = 150;
-
 
     var originCounter = 0,
 
