@@ -15,7 +15,7 @@
                 {
                     "index": 1,
                     "name": "ContrastCSSFilter",
-                    "image_file_path": "increase.png",
+                    "image_file_path": "contrast.png",
                     "enabled": true,
                     "ratchet_enabled": true
                 },
@@ -43,7 +43,7 @@
                 {
                     "index": 5,
                     "name": "BlurCSSFilter",
-                    "image_file_path": "increase.png",
+                    "image_file_path": "blur.png",
                     "enabled": true,
                     "ratchet_enabled": true
                 }

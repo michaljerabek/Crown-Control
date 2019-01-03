@@ -87,7 +87,9 @@ Available options:
 
 ### Turn: Numbers
 
-If the cursor(s) is on any number, you can increase or decrease it by a value based on the context (unit). (I'm not sure if this is a good thing.) Available options:
+If the cursor(s) is on any number, you can increase or decrease it by a value based on the context (unit). (I'm not sure if this is a good thing.) 
+
+Available options:
 
 1. Increment/Decrement number — use ratchet
 2. Increment/Decrement number — do not use ratchet
@@ -129,7 +131,9 @@ div::after {
 
 ### Turn: Colors
 
-If the cursor(s) is on any color, you can change its hue, saturation, lightness or alpha value. The cursor has to be on non-number part of the color definition (except colors in HEX formats). Available options:
+If the cursor(s) is on any color, you can change its hue, saturation, lightness or alpha value. The cursor has to be on non-number part of the color definition (except colors in HEX formats).
+
+Available options:
 
 1. Hue
 2. Saturation
@@ -143,6 +147,27 @@ By default Hue, Saturation and Lightness increase or decrease value by 5 and Alp
 - `ALT` — smaller step (HSL: 1, A: 0.01)
 - `CTRL + ALT` — even smaller step (HSL: Magic numbers, A: 0.001)
 - `CTRL + ALT + SHIFT` — even smaller step for Saturation and Lightness (0.2)
+
+### Turn: CSS Filters
+
+If the cursor(s) is on a filter definition, you can change these functions: brightness, contrast, saturate, hue-rotate, opacity and blur. The cursor has to be on non-number/non-color part of the definition. Functions that are not used will be added to the end of the definition.
+
+Available options:
+
+1. Brightness
+2. Contrast
+3. Saturate
+4. Hue (hue-rotate)
+5. Opacity
+6. Blur
+
+By default Brightness, Contrast, Saturate and Opacity increase or decrease value by 5%, Hue by 5deg and Blur by 1px.
+
+- `CTRL` — larger step
+- `SHIFT` — even larger step
+- `ALT` — smaller step
+- `CTRL + ALT` — even smaller step
+- `CTRL + ALT + SHIFT` — even smaller step
 
 ---
 
