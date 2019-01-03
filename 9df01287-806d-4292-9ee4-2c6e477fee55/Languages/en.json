@@ -78,7 +78,7 @@
         },
         {
             "ID": "SaturateCSSFilter",
-            "value": "Saturate"
+            "value": "Saturation"
         },
         {
             "ID": "HueRotateCSSFilter",
