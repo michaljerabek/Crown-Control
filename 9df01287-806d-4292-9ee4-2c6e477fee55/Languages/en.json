@@ -82,7 +82,7 @@
         },
         {
             "ID": "HueRotateCSSFilter",
-            "value": "Hue Rotate"
+            "value": "Hue"
         },
         {
             "ID": "OpacityCSSFilter",

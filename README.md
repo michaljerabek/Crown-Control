@@ -157,11 +157,11 @@ Available options:
 1. Brightness
 2. Contrast
 3. Saturation (saturate)
-4. Hue Rotate
+4. Hue (hue-rotate)
 5. Opacity
 6. Blur
 
-By default Brightness, Contrast, Saturate and Opacity increase or decrease value by 5%, Hue Rotate by 5deg and Blur by 1px.
+By default Brightness, Contrast, Saturate and Opacity increase or decrease value by 5%, Hue by 5deg and Blur by 1px.
 
 - `CTRL` — larger step
 - `SHIFT` — even larger step
