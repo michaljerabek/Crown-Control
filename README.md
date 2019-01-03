@@ -150,7 +150,7 @@ By default Hue, Saturation and Lightness increase or decrease value by 5 and Alp
 
 ### Turn: CSS Filters
 
-If the cursor(s) is on a filter definition, you can change these functions: brightness, contrast, saturate, hue-rotate, opacity and blur. The cursor has to be on non-number/non-color part of the definition. Functions that are not used will be added to the end of the definition.
+If the cursor(s) is on a filter definition, you can change these functions: brightness, contrast, saturate, hue-rotate, opacity and blur. The cursor has to be on non-number/non-color part of the definition and the definition must be on one line. Functions that are not used will be added to the end of the definition.
 
 Available options:
 
