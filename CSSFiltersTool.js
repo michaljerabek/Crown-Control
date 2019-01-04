@@ -66,7 +66,7 @@ define(function (require, exports, module) {
             case "%":
 
                 switch (true) {
-                    case ModifierKeys.ctrlKey && ModifierKeys.altKey && ModifierKeys.shiftKey: return 0.1;
+                    case ModifierKeys.altKey && ModifierKeys.shiftKey: return 0.1;
                     case ModifierKeys.ctrlKey && ModifierKeys.altKey: return 0.5;
                     case ModifierKeys.shiftKey: return 20;
                     case ModifierKeys.ctrlKey: return 10;
@@ -81,7 +81,7 @@ define(function (require, exports, module) {
             case "px":
 
                 switch (true) {
-                    case ModifierKeys.ctrlKey && ModifierKeys.altKey && ModifierKeys.shiftKey: return 0.001;
+                    case ModifierKeys.altKey && ModifierKeys.shiftKey: return 0.001;
                     case ModifierKeys.ctrlKey && ModifierKeys.altKey: return 0.01;
                     case ModifierKeys.shiftKey: return 20;
                     case ModifierKeys.ctrlKey: return 10;

@@ -146,7 +146,7 @@ By default Hue, Saturation and Lightness increase or decrease value by 5 and Alp
 - `SHIFT` — even larger step (HSL: 20, A: 0.2)
 - `ALT` — smaller step (HSL: 1, A: 0.01)
 - `CTRL + ALT` — even smaller step (HSL: Magic numbers, A: 0.001)
-- `CTRL + ALT + SHIFT` — even smaller step for Saturation and Lightness (0.2)
+- `ALT + SHIFT` — even smaller step for Saturation and Lightness (0.2)
 
 ### Turn: CSS Filters
 
@@ -167,7 +167,7 @@ By default Brightness, Contrast, Saturate and Opacity increase or decrease value
 - `SHIFT` — even larger step
 - `ALT` — smaller step
 - `CTRL + ALT` — even smaller step
-- `CTRL + ALT + SHIFT` — even smaller step
+- `ALT + SHIFT` — even smaller step
 
 ---
 

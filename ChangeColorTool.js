@@ -99,7 +99,7 @@ define(function (require, exports, module) {
             default:
 
                 switch (true) {
-                    case ModifierKeys.ctrlKey && ModifierKeys.altKey && ModifierKeys.shiftKey: return 0.2;
+                    case ModifierKeys.altKey && ModifierKeys.shiftKey: return 0.2;
                     case ModifierKeys.ctrlKey && ModifierKeys.altKey: return 1 / 3;
                     case ModifierKeys.shiftKey: return 20;
                     case ModifierKeys.ctrlKey: return 10;
