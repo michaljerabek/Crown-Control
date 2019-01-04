@@ -15,7 +15,7 @@ define(function (require, exports, module) {
 
     var TOOL_ID = "CSSFilters",
 
-        TEST_REGEX = /(?:-[a-zA-Z\-]+-)?filter([: ]|\s*$)(?:(?:\s*(?:none|initial|inherit|unset))|(?:\s*[a-z\-]+\(([^)]*)\)\s*\)?\s*)*)/gi,
+        TEST_REGEX = /(?:-[a-zA-Z\-]+-)?filter([: ]\s?|\s*$)(?:(?:\s*(?:none|initial|inherit|unset))|(?:\s*[a-z\-]+\(([^)]*)\)\s*\)?\s*)*)/gi,
         TEST_NUMBER_REGEX = /-?\d*\.?\d+/g,
 
         CLEAR_LAST_SELECTION_TIMEOUT = 1000,
