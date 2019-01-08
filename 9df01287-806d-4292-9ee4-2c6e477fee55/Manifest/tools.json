@@ -62,10 +62,10 @@
                 },
                 {
                     "index": 1,
-                    "name": "NumberWithoutRatchet",
-                    "image_file_path": "increase.png",
+                    "name": "NumberRatchetPlusSelection",
+                    "image_file_path": "increase-ratchet.png",
                     "enabled": true,
-                    "ratchet_enabled": false
+                    "ratchet_enabled": true
                 },
                 {
                     "index": 2,
@@ -76,6 +76,20 @@
                 },
                 {
                     "index": 3,
+                    "name": "NumberWithoutRatchet",
+                    "image_file_path": "increase.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 4,
+                    "name": "NumberWithoutRatchetPlusSelection",
+                    "image_file_path": "increase.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 5,
                     "name": "NumberCrossWithoutRatchet",
                     "image_file_path": "increase-cross.png",
                     "enabled": true,

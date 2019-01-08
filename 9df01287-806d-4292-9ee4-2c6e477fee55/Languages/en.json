@@ -9,6 +9,14 @@
             "value": "Inc/Dec"
         },
         {
+            "ID": "NumberRatchetPlusSelection",
+            "value": "Inc/Dec | Selection\u000ARatchet"
+        },
+        {
+            "ID": "NumberWithoutRatchetPlusSelection",
+            "value": "Inc/Dec | Selection"
+        },
+        {
             "ID": "NumberCrossRatchet",
             "value": "Inc/Dec | Cross \u21C4\u000ARatchet"
         },

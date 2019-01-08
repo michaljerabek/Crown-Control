@@ -304,7 +304,7 @@ define(function (require, exports, module) {
 
         value = "\u00B1" + (isSameModifier ?  value : "?");
 
-        CrownConnection.updateTool(TOOL_ID, [{
+        CrownConnection.updateTool(exports.getToolId(), [{
             name: "",
             value: value
         }]);
@@ -466,7 +466,7 @@ define(function (require, exports, module) {
 
         enabled = true;
 
-        CrownConnection.changeTool(TOOL_ID);
+        CrownConnection.changeTool(exports.getToolId());
     };
 
     exports.update = function (crownMsg) {
@@ -497,6 +497,7 @@ define(function (require, exports, module) {
             defaultChangeByValue = getChangeByValue(),
 
             crossDirection = !!crownMsg.task_options.current_tool_option.match(/NumberCross/i),
+            useSelection = !!crownMsg.task_options.current_tool_option.match(/PlusSelection$/i),
             isSameSelection = false,
 
             changes;
@@ -506,15 +507,53 @@ define(function (require, exports, module) {
         selections = selections.map(function (selection) {
 
             var currentLineNumber = selection.start.line,
-                currentLine = editor.document.getLine(currentLineNumber);
+                currentLine = editor.document.getLine(currentLineNumber),
+
+                currentText = "",
+                selectedNumberMatch = "",
+
+                currentTextRange;
 
             inlineTextPositionChange[currentLineNumber] = inlineTextPositionChange[currentLineNumber] || 0;
 
-            var selectedNumberMatch = getMatchForSelection(currentLine, TEST_REGEX, selection);
+            if (useSelection) {
 
-            if (selectedNumberMatch) {
+                if (selection.start.ch === selection.end.ch) {
 
-                var currentText = selectedNumberMatch[0],
+                    return null;
+                }
+
+                currentText = editor.document.getRange(selection.start, selection.end);
+
+                if (!currentLine.match(TEST_REGEX)) {
+
+                    return null;
+                }
+
+                selectedNumberMatch = {
+                    index: selection.start.ch,
+                    toString: function () {
+                        return currentText;
+                    }
+                };
+
+                currentTextRange = {
+                    start: {
+                        line: selection.start.line,
+                        ch: selection.start.ch
+                    },
+                    end: {
+                        line: selection.end.line,
+                        ch: selection.end.ch
+                    }
+                };
+            } else {
+
+                selectedNumberMatch = getMatchForSelection(currentLine, TEST_REGEX, selection);
+
+                if (selectedNumberMatch) {
+
+                    currentText = selectedNumberMatch[0];
 
                     currentTextRange = {
                         start: {
@@ -526,6 +565,10 @@ define(function (require, exports, module) {
                             ch: selectedNumberMatch.index + currentText.length
                         }
                     };
+                }
+            }
+
+            if (selectedNumberMatch) {
 
                 return {
                     selection: selection,

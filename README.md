@@ -92,9 +92,11 @@ If the cursor(s) is on any number, you can increase or decrease it by a value ba
 Available options:
 
 1. Increment/Decrement number — use ratchet
-2. Increment/Decrement number — do not use ratchet
+2. Increment/Decrement number and respect selection — use ratchet
 3. Increment/Decrement number in opposite directions — use ratchet
-4. Increment/Decrement number in opposite directions — do not use ratchet
+4. Increment/Decrement number — do not use ratchet
+5. Increment/Decrement number and respect selection — do not use ratchet
+6. Increment/Decrement number in opposite directions — do not use ratchet
 
 
 - `CTRL` — default value * 10
