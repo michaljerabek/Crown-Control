@@ -27,6 +27,7 @@ define(function (require, exports, module) {
         TEST_UNITS_WITH_SMALL_VALUES = /(?:-?\d*\.?\d+)(em|rem|cm|pc|turn|rad)/gi,
         TEST_UNITS_MS = /(?:-?\d*\.?\d+)ms/gi,
         TEST_UNITS_S = /(?:-?\d*\.?\d+)s/gi,
+        TEST_POSITIVE_ONLY = /(?:(?:min-|max-)?width|(?:min-|max-)?height|flex-basis|flex-grow|flex-shrink)[: ]\s*[0-9.]+[^;'"]*(?:\s*[;'"]|\s*$)/gi,
         TEST_LINEHEIGHT = /line-height[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi,
         TEST_OPACITY = /opacity[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi,
         TEST_FONTWEIGHT = /font-weight[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi,
@@ -211,6 +212,16 @@ define(function (require, exports, module) {
                 return unit && unit[0].match(TEST_UNITS_WITH_SMALL_VALUES) ? smallNumberIncOrDecModifierNoLimit: null;
             }
         },
+        /*{PROBABLY TOO COMPLICATED FOR THE BENEFIT
+            TEST: TEST_POSITIVE_ONLY,
+            VALUE: noNegativeValue,
+            MODIFIERFN: function (match) {
+
+                var unit = match[0].match(/[0-9.]+[a-z]+/gi);
+
+                return unit && unit[0].match(TEST_UNITS_WITH_SMALL_VALUES) ? smallNumberIncOrDecModifierNoLimit: null;
+            }
+        },*/
         {//REM, EM, TURN, ...
             TEST: TEST_UNITS_WITH_SMALL_VALUES,
             MODIFIER: smallNumberIncOrDecModifierNoLimit
