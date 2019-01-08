@@ -23,7 +23,7 @@ define(function (require, exports, module) {
         TEST_CSS_TRANSFORMS = /(?:scale|scaleX|scaleY|scaleZ|scale3d|matrix|matrix3d)\([0-9, .\-]+\)/gi,
         TEST_ROTATE3D = /rotate3d\([0-9, .\-]+(?:turn|deg|rad|grad)\s*\)/gi,
         TEST_CSS_FILTERS = /(?:brightness|contrast|grayscale|invert|opacity|saturate|sepia)\(\s*[0-9.]+%?\s*\)/gi,
-        TEST_CSS_FILTER_WITH_LENGTH_VALUES = /(?:blur)\(\s*[0-9.]+[^)]+\)/gi,
+        TEST_CSS_FILTER_WITH_LENGTH_VALUES = /(?:(?:blur)\(\s*[0-9.]+[^)]+\))|(?:(?:drop-shadow)\([^)]+\)\s*\)?)/gi,
         TEST_UNITS_WITH_SMALL_VALUES = /(?:-?\d*\.?\d+)(em|rem|cm|pc|turn|rad)/gi,
         TEST_UNITS_MS = /(?:-?\d*\.?\d+)ms/gi,
         TEST_UNITS_S = /(?:-?\d*\.?\d+)s/gi,
@@ -175,10 +175,38 @@ define(function (require, exports, module) {
         },
         {//BLUR
             TEST: TEST_CSS_FILTER_WITH_LENGTH_VALUES,
-            VALUE: noNegativeValue,
-            MODIFIERFN: function (match) {
+            VALUEFN: function (match, numberPos, selection) {
 
-                var unit = match[0].match(/[0-9.]+[a-z]+/gi);
+                if (match[0].match(/^\s*drop-shadow/i)) {
+
+                    var valueStart = match[0].match(/[0-9]/) ? match[0].match(/[0-9]/).index : 0;
+
+                    numberPos = findNumberPositionInSpaceList(match, selection, valueStart);
+
+                    if (numberPos !== 2) {
+
+                        return null;
+                    }
+                }
+
+                return noNegativeValue;
+            },
+            MODIFIERFN: function (match, numberPos, selection) {
+
+                var unit;
+
+                if (match[0].match(/^\s*drop-shadow/i)) {
+
+                    var valueStart = match[0].match(/[0-9]/) ? match[0].match(/[0-9]/).index : 0;
+
+                    numberPos = findNumberPositionInSpaceList(match, selection, valueStart);
+
+                    unit = match[0].match(/[0-9.]+[a-z]+/gi);
+
+                    return unit && unit[numberPos].match(TEST_UNITS_WITH_SMALL_VALUES) ? smallNumberIncOrDecModifierNoLimit: null;
+                }
+
+                unit = match[0].match(/[0-9.]+[a-z]+/gi);
 
                 return unit && unit[0].match(TEST_UNITS_WITH_SMALL_VALUES) ? smallNumberIncOrDecModifierNoLimit: null;
             }
@@ -308,6 +336,26 @@ define(function (require, exports, module) {
             name: "",
             value: value
         }]);
+    }
+
+    function findNumberPositionInSpaceList(match, selection, offset) {
+
+        offset = offset || 0;
+
+        var index = match[0].indexOf(" ", offset),
+            position = 0;
+
+        while (index !== -1) {
+
+            if (selection.start.ch - match.index > index) {
+
+                position++;
+            }
+
+            index = match[0].indexOf(" ", index + 1);
+        }
+
+        return position;
     }
 
     function findNumberPositionInCommaList(match, selection) {
