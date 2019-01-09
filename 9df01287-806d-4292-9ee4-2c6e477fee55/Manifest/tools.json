@@ -56,21 +56,21 @@
                 {
                     "index": 0,
                     "name": "NumberRatchet",
-                    "image_file_path": "increase-ratchet.png",
+                    "image_file_path": "increase.png",
                     "enabled": true,
                     "ratchet_enabled": true
                 },
                 {
                     "index": 1,
                     "name": "NumberRatchetPlusSelection",
-                    "image_file_path": "increase-selection-ratchet.png",
+                    "image_file_path": "increase-selection.png",
                     "enabled": true,
                     "ratchet_enabled": true
                 },
                 {
                     "index": 2,
                     "name": "NumberCrossRatchet",
-                    "image_file_path": "increase-cross-ratchet.png",
+                    "image_file_path": "increase-cross.png",
                     "enabled": true,
                     "ratchet_enabled": true
                 },
