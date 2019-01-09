@@ -55,8 +55,8 @@ On macOS:
 ### Press (Crown)
 Switches currently active pane or turns on *Split View*.
 - `CTRL` — switches horizontal/vertical mode
-- `CTRL` + `SHIFT` — turns off *Split View*
-- `CTRL` + `ALT` — switches active pane and its size
+- `CTRL + SHIFT` — turns off *Split View*
+- `CTRL + ALT` — switches active pane and its size
 
 **It requires `F9` and `F9 + MODIFIER_KEYS` shortcuts to be available.**
 
@@ -101,11 +101,11 @@ Available options:
 
 - `CTRL` — default value * 10
 - `SHIFT` — default value * 100
-- `CTRL` + `SHIFT` — default value * 1000
+- `CTRL + SHIFT` — default value * 1000
 - `ALT` — default value / 10
-- `CTRL` + `ALT` — default value / 100
-- `ALT` + `SHIFT` — default value / 1000
-- `CTRL` + `ALT` + `SHIFT` — default value / 10000
+- `ALT + CTRL` — default value / 100
+- `ALT + SHIFT` — default value / 1000
+- `ALT + CTRL + SHIFT` — default value / 10000
 
 
 *In opposite directions* means that *turning to the right* increases positive numbers and decreases negative numbers (and vice versa). What is it good for? For example:
@@ -148,7 +148,7 @@ By default Hue, Saturation and Lightness increase or decrease value by 5 and Alp
 - `CTRL` — larger step (HSL: 10, A: 0.1)
 - `SHIFT` — even larger step (HSL: 20, A: 0.2)
 - `ALT` — smaller step (HSL: 1, A: 0.01)
-- `CTRL + ALT` — even smaller step (HSL: Magic numbers, A: 0.001)
+- `ALT + CTRL` — even smaller step (HSL: Magic numbers, A: 0.001)
 - `ALT + SHIFT` — even smaller step for Saturation and Lightness (0.2)
 
 ### Turn: CSS Filters
@@ -169,7 +169,7 @@ By default Brightness, Contrast, Saturate and Opacity increase or decrease value
 - `CTRL` — larger step
 - `SHIFT` — even larger step
 - `ALT` — smaller step
-- `CTRL + ALT` — even smaller step
+- `ALT + CTRL` — even smaller step
 - `ALT + SHIFT` — even smaller step
 
 ---
