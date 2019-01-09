@@ -262,7 +262,7 @@ define(function (require, exports, module) {
 
                 return decimal.mul(100).toNumber();
             }
-        },/*
+        },*/
         {//GRAYSCALE, ...
             TEST: TEST_CSS_FILTERS,
             VALUEFN: (function() {
