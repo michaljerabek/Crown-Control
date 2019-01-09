@@ -92,10 +92,10 @@ If the cursor(s) is on any number, you can increase or decrease it by a value ba
 Available options:
 
 1. Increment/Decrement number — use ratchet
-2. Increment/Decrement number and respect selection — use ratchet
+2. Increment/Decrement number within selections — use ratchet
 3. Increment/Decrement number in opposite directions — use ratchet
 4. Increment/Decrement number — do not use ratchet
-5. Increment/Decrement number and respect selection — do not use ratchet
+5. Increment/Decrement number within selections — do not use ratchet
 6. Increment/Decrement number in opposite directions — do not use ratchet
 
 
@@ -176,3 +176,19 @@ By default Brightness, Contrast, Saturate and Opacity increase or decrease value
 On macOS `ALT` should correspond to `OPT` and `CTRL` to `CMD`.
 
 **Tip: ALT-GR (right ALT) works the same as left ALT, so you can use the right modifier keys.**
+
+---
+
+## Changelog
+
+- 1.0.1
+  - Value for `blur()` can't by negative
+- 1.0.2
+  - CSS properties don't require colon and semicolon
+- 1.1.0
+  - Added support for CSS Filters
+- 1.1.1 
+  - Numbers can be adjusted within selections
+  - Removed detection for CSS properties (font-weight, opacity, line-height) when adjusting numbers *(too complicated to make it consistent for the entire CSS)*
+
+
