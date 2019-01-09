@@ -63,7 +63,7 @@
                 {
                     "index": 1,
                     "name": "NumberRatchetPlusSelection",
-                    "image_file_path": "increase-ratchet.png",
+                    "image_file_path": "increase-selection-ratchet.png",
                     "enabled": true,
                     "ratchet_enabled": true
                 },
@@ -84,7 +84,7 @@
                 {
                     "index": 4,
                     "name": "NumberWithoutRatchetPlusSelection",
-                    "image_file_path": "increase.png",
+                    "image_file_path": "increase-selection.png",
                     "enabled": true,
                     "ratchet_enabled": false
                 },
