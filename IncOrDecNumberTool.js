@@ -28,9 +28,9 @@ define(function (require, exports, module) {
         TEST_UNITS_MS = /(?:-?\d*\.?\d+)ms/gi,
         TEST_UNITS_S = /(?:-?\d*\.?\d+)s/gi,
         //TEST_POSITIVE_ONLY = /(?:(?:min-|max-)?width|(?:min-|max-)?height|flex-basis|flex-grow|flex-shrink)[: ]\s*[0-9.]+[^;'"]*(?:\s*[;'"]|\s*$)/gi,
-        TEST_LINEHEIGHT = /line-height[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi,
-        TEST_OPACITY = /opacity[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi,
-        TEST_FONTWEIGHT = /font-weight[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi,
+        //TEST_LINEHEIGHT = /line-height[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi,
+        //TEST_OPACITY = /opacity[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi,
+        //TEST_FONTWEIGHT = /font-weight[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi,
 
         UPDATE_UI_TIMEOUT = 150,
 
@@ -244,7 +244,7 @@ define(function (require, exports, module) {
                 return decimal.div(10).toNumber();
             }
         },
-        {//LINE-HEIGHT
+        /*{//LINE-HEIGHT
             TEST: TEST_LINEHEIGHT,
             MODIFIER: smallNumberIncOrDecModifierNoLimit
         },
@@ -262,7 +262,7 @@ define(function (require, exports, module) {
 
                 return decimal.mul(100).toNumber();
             }
-        },
+        },/*
         {//GRAYSCALE, ...
             TEST: TEST_CSS_FILTERS,
             VALUEFN: (function() {
