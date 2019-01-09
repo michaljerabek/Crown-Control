@@ -127,7 +127,8 @@ div::after {
 /* You can select 10px and -10px values and resize the triangle 
  * by turning the Crown. If you increase the border to 12px, 
  * the margin will be -12px (and not -8px), so the triangle 
- * will always be in the center.
+ * will always be in the center. (From 1.1.1 this can be 
+ * limitedly achieved with "Inc/Dec within selections".)
  */
 ```
 
