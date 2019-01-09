@@ -189,7 +189,7 @@ On macOS `ALT` should correspond to `OPT` and `CTRL` to `CMD`.
   - Informs user if update requires reinstallation of profile
 - 1.1.0
   - Added support for CSS Filters
-  - Consistent behavior of modifier keys ()
+  - Consistent behavior of modifier keys: `CTRL + ALT + SHIFT` -> `ALT + SHIFT`
 - 1.1.1 
   - Numbers can be adjusted within selections
   - Removed detection for CSS properties (font-weight, opacity, line-height) when adjusting numbers *(too complicated to make it consistent for the entire CSS)*
