@@ -186,9 +186,10 @@ On macOS `ALT` should correspond to `OPT` and `CTRL` to `CMD`.
   - Value for `blur()` can't by negative
 - 1.0.2
   - CSS properties don't require colon and semicolon
+  - Informs user if update requires reinstallation of profile
 - 1.1.0
   - Added support for CSS Filters
-  - Consistent behavior of modifier keys
+  - Consistent behavior of modifier keys ()
 - 1.1.1 
   - Numbers can be adjusted within selections
   - Removed detection for CSS properties (font-weight, opacity, line-height) when adjusting numbers *(too complicated to make it consistent for the entire CSS)*
