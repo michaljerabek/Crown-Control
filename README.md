@@ -183,7 +183,7 @@ On macOS `ALT` should correspond to `OPT` and `CTRL` to `CMD`.
 ## Changelog
 
 - 1.0.1
-  - Value for `blur()` can't by negative
+  - Value for `blur()` can not be negative
 - 1.0.2
   - CSS properties don't require colon and semicolon
   - Informs user if update requires reinstallation of profile
