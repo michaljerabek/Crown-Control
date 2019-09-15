@@ -77,6 +77,10 @@
             "value": "Alpha"
         },
         {
+            "ID": "Predefined",
+            "value": "List"
+        },
+        {
             "ID": "BrightnessCSSFilter",
             "value": "Brightness"
         },

@@ -134,7 +134,7 @@ div::after {
 
 ### Turn: Colors
 
-If the cursor(s) is on any color, you can change its hue, saturation, lightness or alpha value. The cursor has to be on non-number part of the color definition (except colors in HEX formats).
+If the cursor(s) is on any color, you can change its hue, saturation, lightness or alpha value. The cursor has to be on non-number part of the color definition (except colors in HEX formats). You can also create a file (see below) with a list of predefined colors.
 
 Available options:
 
@@ -142,6 +142,7 @@ Available options:
 2. Saturation
 3. Lightness
 4. Alpha
+5. List?
 
 By default Hue, Saturation and Lightness increase or decrease value by 5 and Alpha by 0.05. 
 
@@ -180,6 +181,21 @@ On macOS `ALT` should correspond to `OPT` and `CTRL` to `CMD`.
 
 ---
 
+## Predefined values
+
+In the project folder you can create a file named `crowncontrol.json` with predefined values. (Currently supports only colors.)
+
+```
+{
+    "colors": [
+        "deepskyblue",
+        "rgba(255, 255, 0, 0.5)"
+    ]
+}
+```
+
+---
+
 ## Changelog
 
 - 1.0.1
@@ -193,5 +209,6 @@ On macOS `ALT` should correspond to `OPT` and `CTRL` to `CMD`.
 - 1.1.1 
   - Numbers can be adjusted within selections
   - Removed detection for CSS properties (font-weight, opacity, line-height) when adjusting numbers *(too complicated to make it consistent for the entire CSS)*
-
+- 1.1.2
+  - Colors can be changed from a list with predefined colors
 

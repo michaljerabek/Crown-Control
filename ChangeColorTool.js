@@ -1,5 +1,5 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, regexp: true, indent: 4, maxerr: 50 */
-/*global define, $, brackets, window */
+/*global define, brackets */
 
 define(function (require, exports, module) {
 
@@ -9,11 +9,13 @@ define(function (require, exports, module) {
 
         CrownConnection = require("CrownConnection"),
         ModifierKeys = require("ModifierKeys"),
+        PredefinedData = require("PredefinedData"),
 
         tinycolor = require("node_modules/tinycolor2/tinycolor");
 
 
     var TOOL_ID = "ChangeColor",
+        TOOL_WITH_PREDEFINED_ID = "ChangeColorWithPredefined",
 
         TEST_NAME_REGEX = new RegExp("\\b" + Object.keys(tinycolor.names).sort(function (a, b) {
                 return b.length - a.length;
@@ -26,13 +28,28 @@ define(function (require, exports, module) {
 
     var originCounter = 0,
 
+        currentToolId = TOOL_ID,
+
         enabled = false,
 
         lastSelection = null,
         colorsData = {},
 
-        updateUIOnTouchTimeout;
+        updateUIOnTouchTimeout,
 
+        predefinedColorIndex = 0,
+        predefinedColors = [],
+        predefinedTinyColors = [];
+
+
+    PredefinedData.onChange(function (data) {
+
+        predefinedColors = data ? (data.colors || []) : [];
+
+        predefinedTinyColors = predefinedColors.map(function (color) {
+            return tinycolor(color);
+        });
+    });
 
     function getMatchForSelection(text, regex, selection) {
 
@@ -52,7 +69,7 @@ define(function (require, exports, module) {
 
         clearTimeout(updateUIOnTouchTimeout);
 
-        CrownConnection.updateTool(TOOL_ID, nameValueArray);
+        CrownConnection.updateTool(exports.getToolId(), nameValueArray);
     }
 
     function getUpdateToolFromHsl(hsl, option) {
@@ -291,6 +308,7 @@ define(function (require, exports, module) {
                 break;
         }
 
+        return tinycolorColor;
     }
 
     function updateColor(tinycolorColor, updatedHsl, index) {
@@ -490,19 +508,21 @@ define(function (require, exports, module) {
 
     exports.getToolId = function () {
 
-        return TOOL_ID;
+        currentToolId = predefinedColors.length ? TOOL_WITH_PREDEFINED_ID: TOOL_ID;
+
+        return currentToolId;
     };
 
     exports.use = function () {
 
         enabled = true;
 
-        CrownConnection.changeTool(TOOL_ID);
+        CrownConnection.changeTool(exports.getToolId());
     };
 
     exports.update = function (crownMsg) {
 
-        if (crownMsg.task_options.current_tool !== TOOL_ID) {
+        if (crownMsg.task_options.current_tool !== exports.getToolId()) {
 
             return;
         }
@@ -526,6 +546,7 @@ define(function (require, exports, module) {
             inlineTextPositionChange = {},
 
             option = crownMsg.task_options.current_tool_option,
+            incOrDec = (crownMsg.ratchet_delta || crownMsg.delta) > 0 ? 1: -1,
 
             changeByValue = getChangeByValue(option),
 
@@ -586,6 +607,29 @@ define(function (require, exports, module) {
             colorsData = {};
         }
 
+        if (option === "Predefined") {
+
+            if (!isSameSelection) {
+
+                predefinedColorIndex = incOrDec ? -1: 0;
+
+                var firstHsl = tinycolor(selections[0].currentText).toHslString();
+
+                predefinedTinyColors.some(function (tinycolor, t) {
+
+                    if (selections[0].currentText === predefinedColors[t] || firstHsl === tinycolor.toHslString()) {
+
+                        predefinedColorIndex = t;
+
+                        return true;
+                    }
+                });
+            }
+
+            predefinedColorIndex = (predefinedColorIndex + incOrDec) % predefinedTinyColors.length;
+            predefinedColorIndex = predefinedColorIndex < 0 ? predefinedTinyColors.length - 1: predefinedColorIndex;
+        }
+
         changes = selections.map(function (selection, s) {
 
             var currentLineNumber = selection.currentLineNumber,
@@ -612,34 +656,52 @@ define(function (require, exports, module) {
 
                 tinycolorColor = colorsData[s] ? colorsData[s].tinycolor : tinycolor(currentText === "transparent" ? "rgba(0, 0, 0, 0)": currentText);
 
-            var currentHsl = tinycolorColor.toHsl();
+            var currentHsl = tinycolorColor.toHsl(),
+                updatedHsl;
 
-            if (typeof colorsData[s] === "undefined") {
+            if (typeof colorsData[s] === "undefined" || colorsData[s].predefined) {
 
                 colorsData[s] = {};
 
                 colorsData[s].tinycolor = tinycolorColor;
 
                 setInitialColorData(currentText, currentHsl, s);
+
+                colorsData[s].predefined = false;
             }
 
-            changeColor(tinycolorColor, option, changeByValue, incOrDec, currentHsl, s);
+            if (option === "Predefined") {
 
-            //restore hue and saturation
-            var updatedHsl = tinycolorColor.toHsl();
-
-            if ((currentHsl.s === 0 && updatedHsl.s !== 0) || (currentHsl.s === 0 || updatedHsl.l !== 1)) {
-
-                updatedHsl.h = colorsData[s].hue;
-                updatedHsl.s = colorsData[s].saturation;
-
-                tinycolorColor = tinycolor(updatedHsl);
+                tinycolorColor = (predefinedTinyColors[predefinedColorIndex] || tinycolorColor).clone();
 
                 colorsData[s].tinycolor = tinycolorColor;
-            }
-            ///
+                colorsData[s].predefined = true;
 
-            updatedText = updateColor(tinycolorColor, updatedHsl, s) || updatedText;
+                updatedText = predefinedColors[predefinedColorIndex] || currentText;
+                updatedHsl = tinycolorColor.toHsl();
+
+                setInitialColorData(updatedText, updatedHsl, s);
+
+            } else {
+
+                changeColor(tinycolorColor, option, changeByValue, incOrDec, currentHsl, s);
+
+                //restore hue and saturation
+                updatedHsl = tinycolorColor.toHsl();
+
+                if ((currentHsl.s === 0 && updatedHsl.s !== 0) || (currentHsl.s === 0 || updatedHsl.l !== 1)) {
+
+                    updatedHsl.h = colorsData[s].hue;
+                    updatedHsl.s = colorsData[s].saturation;
+
+                    tinycolorColor = tinycolor(updatedHsl);
+
+                    colorsData[s].tinycolor = tinycolorColor;
+                }
+                ///
+
+                updatedText = updateColor(tinycolorColor, updatedHsl, s) || updatedText;
+            }
 
             updatedTextRange.end.ch = currentTextRange.start.ch + updatedText.length + inlineTextPositionChange[currentLineNumber];
 
@@ -674,7 +736,11 @@ define(function (require, exports, module) {
 
             lastSelection = JSON.stringify(changes.map(function (change) { return [change.afterRange, change.replacement]; }));
 
-            if (changes.length === 1) {
+            if (option === "Predefined") {
+
+                updateUI([{name: option, value: ""}]);
+
+            } else if (changes.length === 1) {
 
                 updateUI(getUpdateToolFromHsl(changes[0].updatedHsl, option));
 

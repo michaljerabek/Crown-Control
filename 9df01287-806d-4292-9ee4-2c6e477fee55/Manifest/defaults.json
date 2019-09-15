@@ -3,7 +3,7 @@
     "info": {
         "name": "Brackets",
         "publisher": "mjerabek.cz",
-        "version": "1.1.1",
+        "version": "1.1.2",
         "win_name": "Brackets.exe",
         "win_minimum_supported_version": "0.0.0",
         "win_maximum_supported_version": "9999.0.0",
