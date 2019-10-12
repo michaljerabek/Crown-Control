@@ -25,6 +25,18 @@
             "value": "Inc/Dec | Cross \u21C4"
         },
         {
+            "ID": "Number",
+            "value": "Inc/Dec"
+        },
+        {
+            "ID": "NumberPlusSelection",
+            "value": "Inc/Dec | Selection"
+        },
+        {
+            "ID": "NumberCross",
+            "value": "Inc/Dec | Cross \u21C4"
+        },
+        {
             "ID": "ScrollH",
             "value": "Scroll \u2194 [SHIFT] \u2195 \u000A[CTRL] Faster"
         },

@@ -18,13 +18,16 @@ define(function (require, exports, module) {
         CSSFiltersTool = require("CSSFiltersTool"),
         IncOrDecNumberTool = require("IncOrDecNumberTool"),
         DefaultTool = require("DefaultTool"),
-        ChangeColorTool = require("ChangeColorTool");
+        ChangeColorTool = require("ChangeColorTool"),
+
+        Options = require("Options");
 
     require("PaneSwitcher");
 
 
     var TOOLS = [ChangeColorTool, CSSFiltersTool, IncOrDecNumberTool, DefaultTool];
 
+    Options.addTools(TOOLS);
 
     var currentTool = null,
         currentToolId = "";

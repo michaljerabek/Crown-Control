@@ -13,12 +13,21 @@ define(function (require, exports, module) {
 
     var ChangeFile = require("DefaultToolChangeFileOption"),
         ResizePanes = require("DefaultToolResizePanesOption"),
-        Scroll = require("DefaultToolScrollOption");
+        Scroll = require("DefaultToolScrollOption"),
+        Options = require("Options");
 
 
-    var TOOL_ID = "DefaultTool",
-        SPLIT_VIEW_COLS_TOOL_ID = "DefaultToolSplitViewCols",
-        SPLIT_VIEW_ROWS_TOOL_ID = "DefaultToolSplitViewRows",
+    var TOOL_IDS = {
+            single: "DefaultTool",
+            cols: "DefaultToolSplitViewCols",
+            rows: "DefaultToolSplitViewRows",
+            onlyActivePostfix: "OnlyActive",
+            scrollPostfix: {
+                hor: "ScrollHor",
+                ver: "ScrollVer",
+                both: "ScrollBoth"
+            }
+        },
         TOOL_ID_REGEX = /^DefaultTool/;
 
 
@@ -41,6 +50,60 @@ define(function (require, exports, module) {
         }
     });
 
+    exports.getDefaultOptions = function () {
+
+        return [
+            {
+                key: "default-tool-with-inactive",
+                value: true,
+                type: "boolean"
+            },
+            {
+                key: "default-tool-scroll",
+                value: TOOL_IDS.scrollPostfix.both,
+                type: "string"
+            }
+        ];
+    };
+
+    exports.getOptions = function () {
+
+        return {
+            tool: "Default",
+            list: [
+                {
+                    title: "Split view",
+                    type: "checkbox",
+                    options: [
+                        {
+                            label: "Show tools for inactive pane",
+                            key: "default-tool-with-inactive"
+                        }
+                    ]
+                },
+                {
+                    title: "Scroll direction",
+                    key: "default-tool-scroll",
+                    type: "radio",
+                    options: [
+                        {
+                            label: "Horizontal",
+                            value: TOOL_IDS.scrollPostfix.hor
+                        },
+                        {
+                            label: "Vertical",
+                            value: TOOL_IDS.scrollPostfix.ver
+                        },
+                        {
+                            label: "Both",
+                            value: TOOL_IDS.scrollPostfix.both
+                        }
+                    ]
+                }
+            ]
+        };
+    };
+
     exports.disable = function () {
 
         enabled = false;
@@ -53,11 +116,15 @@ define(function (require, exports, module) {
 
     exports.getToolId = function getToolId() {
 
-        return MainViewManager.getPaneCount() === 1 ?
-            TOOL_ID:
+        var toolId = MainViewManager.getPaneCount() === 1 ?
+            TOOL_IDS.single:
             MainViewManager.getLayoutScheme().columns !== 1 ?
-                SPLIT_VIEW_COLS_TOOL_ID:
-                SPLIT_VIEW_ROWS_TOOL_ID;
+                TOOL_IDS.cols: TOOL_IDS.rows;
+
+        toolId += Options.get("default-tool-with-inactive") ? "": TOOL_IDS.onlyActivePostfix;
+        toolId += Options.get("default-tool-scroll");
+
+        return toolId;
     };
 
     exports.use = function () {

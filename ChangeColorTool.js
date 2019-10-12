@@ -11,7 +11,8 @@ define(function (require, exports, module) {
         ModifierKeys = require("ModifierKeys"),
         PredefinedData = require("PredefinedData"),
 
-        tinycolor = require("node_modules/tinycolor2/tinycolor");
+        tinycolor = require("node_modules/tinycolor2/tinycolor"),
+        Options = require("Options");
 
 
     var TOOL_ID = "ChangeColor",
@@ -467,6 +468,35 @@ define(function (require, exports, module) {
         }
     });
 
+    exports.getDefaultOptions = function () {
+
+        return [
+            {
+                key: "change-color-low-priority",
+                value: true,
+                type: "boolean"
+            }
+        ];
+    };
+
+    exports.getOptions = function () {
+
+        return {
+            tool: "Colors",
+            list: [
+                {
+                    type: "checkbox",
+                    options: [
+                        {
+                            label: "Numbers have higher priority then colors",
+                            key: "change-color-low-priority"
+                        }
+                    ]
+                }
+            ]
+        };
+    };
+
     exports.shouldBeUsed = function () {
 
         var editor = EditorManager.getActiveEditor();
@@ -492,8 +522,10 @@ define(function (require, exports, module) {
 
                     if (selectedColorMatch) {
 
-                        selectedNumberMatch = getMatchForSelection(currentLine, TEST_NUMBER_REGEX, selection);
+                        if (Options.get("change-color-low-priority") === true) {
 
+                            selectedNumberMatch = getMatchForSelection(currentLine, TEST_NUMBER_REGEX, selection);
+                        }
                     } else {
 
                         selectedColorMatch = getMatchForSelection(currentLine, TEST_NAME_REGEX, selection);

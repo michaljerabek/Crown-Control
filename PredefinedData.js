@@ -6,14 +6,16 @@ define(function (require, exports, module) {
     "use strict";
 
     var FileSystem = brackets.getModule("filesystem/FileSystem"),
-        ProjectManager = brackets.getModule("project/ProjectManager");
+        ProjectManager = brackets.getModule("project/ProjectManager"),
+
+        Options = require("Options");
 
 
-    var FILE_NAME = "crowncontrol.json";
-
+    var FILE_NAME = Options.get("predefined-data");
 
     var onChange = [],
         currentFile = null,
+        currentDirPath = "",
         currentFilePath = "",
 
         data = {};
@@ -55,7 +57,18 @@ define(function (require, exports, module) {
 
     ProjectManager.on("projectOpen", function (event, dir) {
 
-        currentFilePath = dir.fullPath + FILE_NAME;
+        currentDirPath = dir.fullPath;
+        currentFilePath = currentDirPath + FILE_NAME;
+        currentFile = FileSystem.getFileForPath(currentFilePath);
+
+        loadData();
+    });
+
+    Options.onChange("predefined-data", function () {
+
+        FILE_NAME = Options.get("predefined-data");
+
+        currentFilePath = currentDirPath + FILE_NAME;
         currentFile = FileSystem.getFileForPath(currentFilePath);
 
         loadData();

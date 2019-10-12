@@ -11,10 +11,15 @@ define(function (require, exports, module) {
     var CrownConnection = require("CrownConnection"),
         ModifierKeys = require("ModifierKeys"),
 
-        Decimal = require("node_modules/decimal.js/decimal");
+        Decimal = require("node_modules/decimal.js/decimal"),
+        Options = require("Options");
 
-
-    var TOOL_ID = "IncOrDecNumber",
+    var TOOL_IDS = {
+            both: "IncOrDecNumber",
+            ratchet: "IncOrDecNumberRatchet",
+            noratchet: "IncOrDecNumberWithoutRatchet"
+        },
+        TOOL_ID = TOOL_IDS.ratchet,
 
         TEST_REGEX = /-?\d*\.?\d+/g,
         TEST_RGB_REGEX = /rgba?\([0-9, %.]+\)/gi,
@@ -115,7 +120,8 @@ define(function (require, exports, module) {
                     pct = values[numberPos].indexOf("%") !== -1;
 
                 return pct ? null: smallNumberIncOrDecModifier;
-            }
+            },
+            MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
         },
         {//HSL(A)
             TEST: TEST_HSL_REGEX,
@@ -163,7 +169,8 @@ define(function (require, exports, module) {
                     pct = values[numberPos].indexOf("%") !== -1;
 
                 return pct ? null: smallNumberIncOrDecModifier;
-            }
+            },
+            MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
         },
         {//CUBIC-BEZIER
             TEST: TEST_BEZIER_REGEX,
@@ -172,7 +179,8 @@ define(function (require, exports, module) {
             MODIFIER0: smallNumberIncOrDecModifier,
             MODIFIER1: smallNumberIncOrDecModifier,
             MODIFIER2: smallNumberIncOrDecModifier,
-            MODIFIER3: smallNumberIncOrDecModifier
+            MODIFIER3: smallNumberIncOrDecModifier,
+            MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
         },
         {//BLUR
             TEST: TEST_CSS_FILTER_WITH_LENGTH_VALUES,
@@ -210,7 +218,8 @@ define(function (require, exports, module) {
                 unit = match[0].match(/[0-9.]+[a-z]+/gi);
 
                 return unit && unit[0].match(TEST_UNITS_WITH_SMALL_VALUES) ? smallNumberIncOrDecModifierNoLimit: null;
-            }
+            },
+            MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
         },
         /*{PROBABLY TOO COMPLICATED FOR THE BENEFIT
             TEST: TEST_POSITIVE_ONLY,
@@ -224,7 +233,8 @@ define(function (require, exports, module) {
         },*/
         {//REM, EM, TURN, ...
             TEST: TEST_UNITS_WITH_SMALL_VALUES,
-            MODIFIER: smallNumberIncOrDecModifierNoLimit
+            MODIFIER: smallNumberIncOrDecModifierNoLimit,
+            MODIFIER_OPTION_KEY: "inc-dec-number-units-step"
         },
         {//MS, ...
             TEST: TEST_UNITS_MS,
@@ -233,7 +243,8 @@ define(function (require, exports, module) {
                 var decimal = new Decimal(value);
 
                 return decimal.mul(10).toNumber();
-            }
+            },
+            MODIFIER_OPTION_KEY: "inc-dec-number-units-step"
         },
         {//S, ...
             TEST: TEST_UNITS_S,
@@ -242,7 +253,8 @@ define(function (require, exports, module) {
                 var decimal = new Decimal(value);
 
                 return decimal.div(10).toNumber();
-            }
+            },
+            MODIFIER_OPTION_KEY: "inc-dec-number-units-step"
         },
         /*{//LINE-HEIGHT
             TEST: TEST_LINEHEIGHT,
@@ -291,11 +303,13 @@ define(function (require, exports, module) {
                     pct = values[0].indexOf("%") !== -1;
 
                 return pct ? null: smallNumberIncOrDecModifier;
-            }
+            },
+            MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
         },
         {//SCALE, ...
             TEST: TEST_CSS_TRANSFORMS,
-            MODIFIER: smallNumberIncOrDecModifier
+            MODIFIER: smallNumberIncOrDecModifier,
+            MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
         },
         {//ROTATE3D (?)
             TEST: TEST_ROTATE3D,
@@ -312,7 +326,8 @@ define(function (require, exports, module) {
                 }
 
                 return null;
-            }
+            },
+            MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
         }
     ];
 
@@ -416,6 +431,11 @@ define(function (require, exports, module) {
                     foundModifier.MODIFIER = modifier.MODIFIERFN(match, numberPos, selection);
                 }
 
+                if (modifier.MODIFIER_OPTION_KEY && Options.get(modifier.MODIFIER_OPTION_KEY) === false) {
+
+                    foundModifier.MODIFIER = null;
+                }
+
                 return true;
             }
         });
@@ -472,6 +492,69 @@ define(function (require, exports, module) {
         }
     });
 
+    exports.getDefaultOptions = function () {
+
+        return [
+            {
+                key: "inc-dec-number-tool",
+                value: TOOL_IDS.ratchet,
+                type: "string"
+            },
+            {
+                key: "inc-dec-number-units-step",
+                value: true,
+                type: "boolean"
+            },
+            {
+                key: "inc-dec-number-other-step",
+                value: true,
+                type: "boolean"
+            }
+        ];
+    };
+
+    exports.getOptions = function () {
+
+        return {
+            tool: "Numbers",
+            list: [
+                {
+                    title: "Tool type",
+                    key: "inc-dec-number-tool",
+                    type: "radio",
+                    options: [
+                        {
+                            label: "With ratchet",
+                            value: TOOL_IDS.ratchet
+                        },
+                        {
+                            label: "Without ratchet",
+                            value: TOOL_IDS.noratchet
+                        },
+                        {
+                            label: "Both",
+                            value: TOOL_IDS.both
+                        }
+                    ]
+                },
+                {
+                    title: "Step",
+                    type: "checkbox",
+                    options: [
+                        {
+                            label: "Adjust step for numbers with units typically with lower/higher values (rem, ms, turn, ...)",
+                            key: "inc-dec-number-units-step"
+                        },
+                        {
+                            label: "Adjust step for other numbers typically with lower/higher values (alpha, cubic-bezier, ...)",
+                            key: "inc-dec-number-other-step"
+                        }
+                    ]
+                }
+            ]
+        };
+    };
+
     exports.disable = function () {
 
         clearTimeout(updateUIOnTouchTimeout);
@@ -517,6 +600,8 @@ define(function (require, exports, module) {
     };
 
     exports.getToolId = function () {
+
+        TOOL_ID = Options.get("inc-dec-number-tool") || TOOL_ID;
 
         return TOOL_ID;
     };

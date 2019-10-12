@@ -98,6 +98,60 @@
             ]
         },
         {
+            "name": "IncOrDecNumberWithoutRatchet",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "Number",
+                    "image_file_path": "increase.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "NumberPlusSelection",
+                    "image_file_path": "increase-selection.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 2,
+                    "name": "NumberCross",
+                    "image_file_path": "increase-cross.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "IncOrDecNumberRatchet",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "Number",
+                    "image_file_path": "increase.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 1,
+                    "name": "NumberPlusSelection",
+                    "image_file_path": "increase-selection.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 2,
+                    "name": "NumberCross",
+                    "image_file_path": "increase-cross.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                }
+            ]
+        },
+        {
             "name": "ChangeColor",
             "enabled": true,
             "tool_options": [
@@ -173,7 +227,7 @@
             ]
         },
         {
-            "name": "DefaultTool",
+            "name": "DefaultToolScrollBoth",
             "enabled": true,
             "tool_options": [
                 {
@@ -200,7 +254,47 @@
             ]
         },
         {
-            "name": "DefaultToolSplitViewCols",
+            "name": "DefaultToolScrollVer",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollV",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ChangeFile",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolScrollHor",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollH",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ChangeFile",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewColsScrollBoth",
             "enabled": true,
             "tool_options": [
                 {
@@ -239,7 +333,7 @@
                     "ratchet_enabled": false
                 },
                 {
-                    "index": 6,
+                    "index": 5,
                     "name": "ResizePanes",
                     "image_file_path": "horizontal-resize.png",
                     "enabled": true,
@@ -248,7 +342,163 @@
             ]
         },
         {
-            "name": "DefaultToolSplitViewRows",
+            "name": "DefaultToolSplitViewColsScrollHor",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollHActive",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ChangeFileByPane",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 2,
+                    "name": "ScrollHInactive",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 3,
+                    "name": "ResizePanes",
+                    "image_file_path": "horizontal-resize.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewColsScrollVer",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollVActive",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ChangeFileByPane",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 2,
+                    "name": "ScrollVInactive",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 3,
+                    "name": "ResizePanes",
+                    "image_file_path": "horizontal-resize.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewColsOnlyActiveScrollBoth",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollHActive",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ScrollVActive",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 2,
+                    "name": "ChangeFileByPane",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 3,
+                    "name": "ResizePanes",
+                    "image_file_path": "horizontal-resize.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewColsOnlyActiveScrollHor",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollHActive",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ChangeFileByPane",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 2,
+                    "name": "ResizePanes",
+                    "image_file_path": "horizontal-resize.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewColsOnlyActiveScrollVer",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollVActive",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ChangeFileByPane",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 2,
+                    "name": "ResizePanes",
+                    "image_file_path": "horizontal-resize.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewRowsScrollBoth",
             "enabled": true,
             "tool_options": [
                 {
@@ -287,7 +537,163 @@
                     "ratchet_enabled": false
                 },
                 {
-                    "index": 6,
+                    "index": 5,
+                    "name": "ResizePanes",
+                    "image_file_path": "vertical-resize.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewRowsScrollHor",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollHActive",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ChangeFileByPane",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 2,
+                    "name": "ScrollHInactive",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 3,
+                    "name": "ResizePanes",
+                    "image_file_path": "vertical-resize.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewRowsScrollVer",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollVActive",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ChangeFileByPane",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 2,
+                    "name": "ScrollVInactive",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 3,
+                    "name": "ResizePanes",
+                    "image_file_path": "vertical-resize.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewRowsOnlyActiveScrollBoth",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollHActive",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ScrollVActive",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 2,
+                    "name": "ChangeFileByPane",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 3,
+                    "name": "ResizePanes",
+                    "image_file_path": "vertical-resize.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewRowsOnlyActiveScrollHor",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollHActive",
+                    "image_file_path": "horizontal-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ChangeFileByPane",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 2,
+                    "name": "ResizePanes",
+                    "image_file_path": "vertical-resize.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                }
+            ]
+        },
+        {
+            "name": "DefaultToolSplitViewRowsOnlyActiveScrollVer",
+            "enabled": true,
+            "tool_options": [
+                {
+                    "index": 0,
+                    "name": "ScrollVActive",
+                    "image_file_path": "vertical-scroll.png",
+                    "enabled": true,
+                    "ratchet_enabled": false
+                },
+                {
+                    "index": 1,
+                    "name": "ChangeFileByPane",
+                    "image_file_path": "files.png",
+                    "enabled": true,
+                    "ratchet_enabled": true
+                },
+                {
+                    "index": 2,
                     "name": "ResizePanes",
                     "image_file_path": "vertical-resize.png",
                     "enabled": true,

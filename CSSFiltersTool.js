@@ -10,7 +10,8 @@ define(function (require, exports, module) {
         CrownConnection = require("CrownConnection"),
         ModifierKeys = require("ModifierKeys"),
 
-        Decimal = require("node_modules/decimal.js/decimal");
+        Decimal = require("node_modules/decimal.js/decimal"),
+        Options = require("Options");
 
 
     var TOOL_ID = "CSSFilters",
@@ -449,6 +450,35 @@ define(function (require, exports, module) {
         });
     });
 
+    exports.getDefaultOptions = function () {
+
+        return [
+            {
+                key: "css-filters-low-priority",
+                value: true,
+                type: "boolean"
+            }
+        ];
+    };
+
+    exports.getOptions = function () {
+
+        return {
+            tool: "CSS Filters",
+            list: [
+                {
+                    type: "checkbox",
+                    options: [
+                        {
+                            label: "Numbers have higher priority then filters",
+                            key: "css-filters-low-priority"
+                        }
+                    ]
+                }
+            ]
+        };
+    };
+
     exports.shouldBeUsed = function () {
 
         var editor = EditorManager.getActiveEditor();
@@ -470,7 +500,10 @@ define(function (require, exports, module) {
 
                 if (selectedFilterMatch) {
 
-                    selectedNumberMatch = getMatchForSelection(currentLine, TEST_NUMBER_REGEX, selection);
+                    if (Options.get("css-filters-low-priority") === true) {
+
+                        selectedNumberMatch = getMatchForSelection(currentLine, TEST_NUMBER_REGEX, selection);
+                    }
                 }
 
                 return selectedFilterMatch && !selectedNumberMatch;

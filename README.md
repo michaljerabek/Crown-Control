@@ -211,4 +211,5 @@ In the project folder you can create a file named `crowncontrol.json` with prede
   - Removed detection for CSS properties (font-weight, opacity, line-height) when adjusting numbers *(too complicated to make it consistent for the entire CSS)*
 - 1.1.2
   - Colors can be changed from a list with predefined colors
-
+- 1.2.0
+  - Options
