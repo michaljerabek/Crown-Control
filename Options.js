@@ -27,10 +27,10 @@ define(function (require, exports, module) {
 
         var options = tool.getOptions();
 
-        return (`<h3>${options.tool}</h3>` + options.list.map(item => {
+        return (`<h3 style="margin-top: 0">${options.tool}</h3>` + options.list.map((item, i) => {
 
             return `
-                ${item.title ? `<h4 style="margin-top: 15px;">${item.title}</h4>` : ""}
+                ${item.title ? `<h4 style="margin-top: ${(i ? 17: 12)}px; margin-bottom: 13px;">${item.title}</h4>` : ""}
                 ${item.options.map(option => {
 
                     switch (item.type) {
@@ -52,7 +52,7 @@ define(function (require, exports, module) {
                          default: return "";
                     }
                 }).join("")}`;
-        }).join("") + `<div style="height: 1px; margin: 20px 0 15px 0; background: rgba(127, 127, 127, 0.25)"></div>`);
+        }).join("") + `<div style="height: 1px; margin: 19px 0 14px 0; background: rgba(127, 127, 127, 0.25)"></div>`);
     }
 
     function getOptionsDialog() {
@@ -60,7 +60,7 @@ define(function (require, exports, module) {
         var content = `
             <form>
                 ${tools.filter(tool => typeof tool.getOptions === "function").reverse().map(getOptionTplForTool).join("")}
-                <h3>Predefined data</h3>
+                <h3 style="margin-top: 0">Predefined data</h3>
                 <label for="${ID.predefinedData}">Path to .json file</label>
                 <div style="display: flex;">
                     <span style="margin-right: 2px; line-height: 28px;">project&sol;</span>
@@ -144,7 +144,6 @@ define(function (require, exports, module) {
         }
     }
 
-
     var $optionIcon = $("<a>");
 
     $optionIcon
@@ -188,6 +187,11 @@ define(function (require, exports, module) {
                 });
             }
         });
+    };
+
+    exports.define = function (key, type, value) {
+
+        prefs.definePreference(key, type, value);
     };
 
     exports.get = function (key) {

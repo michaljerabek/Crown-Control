@@ -9,16 +9,15 @@ define(function (require, exports, module) {
         CommandManager = brackets.getModule("command/CommandManager"),
         Commands = brackets.getModule("command/Commands"),
         WorkspaceManager = brackets.getModule("view/WorkspaceManager"),
-        KeyBindingManager = brackets.getModule("command/KeyBindingManager");
+        KeyBindingManager = brackets.getModule("command/KeyBindingManager"),
+
+        Options = require("Options");
 
 
     var switchPaneCommand = "mjerabek.cz.crowncontrol.switch-pane-focus",
         switchPaneSizeCommand = "mjerabek.cz.crowncontrol.switch-pane-focus-and-toggle-size",
         switchPaneTypeCommand = "mjerabek.cz.crowncontrol.switch-split-view-type",
         closeSplitViewCommand = "mjerabek.cz.crowncontrol.close-split-view";
-
-
-    var FKEY = "F9";
 
 
     var lastSplitViewTypeCommand = Commands.CMD_SPLITVIEW_VERTICAL;
@@ -103,28 +102,28 @@ define(function (require, exports, module) {
     if (!KeyBindingManager.getKeyBindings(switchPaneCommand).length) {
 
         KeyBindingManager.addBinding(switchPaneCommand, {
-            key: FKEY
+            key: Options.get("pane-switcher-fkey")
         });
     }
 
     if (!KeyBindingManager.getKeyBindings(switchPaneSizeCommand).length) {
 
         KeyBindingManager.addBinding(switchPaneSizeCommand, {
-            key: "Ctrl-Alt-" + FKEY
+            key: "Ctrl-Alt-" + Options.get("pane-switcher-fkey")
         });
     }
 
     if (!KeyBindingManager.getKeyBindings(switchPaneTypeCommand).length) {
 
         KeyBindingManager.addBinding(switchPaneTypeCommand, {
-            key: "Ctrl-" + FKEY
+            key: "Ctrl-" + Options.get("pane-switcher-fkey")
         });
     }
 
     if (!KeyBindingManager.getKeyBindings(closeSplitViewCommand).length) {
 
         KeyBindingManager.addBinding(closeSplitViewCommand, {
-            key: "Ctrl-Shift-" + FKEY
+            key: "Ctrl-Shift-" + Options.get("pane-switcher-fkey")
         });
     }
 });

@@ -183,7 +183,7 @@ On macOS `ALT` should correspond to `OPT` and `CTRL` to `CMD`.
 
 ## Predefined values
 
-In the project folder you can create a file named `crowncontrol.json` with predefined values. (Currently supports only colors.)
+In the project folder you can create a file named `crowncontrol.json` with predefined values. Currently supports only colors. The path to the file can be changed in the options.
 
 ```
 {

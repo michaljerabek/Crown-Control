@@ -8,13 +8,13 @@ define(function (require, exports, module) {
     var MainViewManager = brackets.getModule("view/MainViewManager");
 
 
-    var CrownConnection = require("CrownConnection");
+    var CrownConnection = require("CrownConnection"),
+        Options = require("Options");
 
 
     var ChangeFile = require("DefaultToolChangeFileOption"),
         ResizePanes = require("DefaultToolResizePanesOption"),
-        Scroll = require("DefaultToolScrollOption"),
-        Options = require("Options");
+        Scroll = require("DefaultToolScrollOption");
 
 
     var TOOL_IDS = {
@@ -61,6 +61,11 @@ define(function (require, exports, module) {
             {
                 key: "default-tool-scroll",
                 value: TOOL_IDS.scrollPostfix.both,
+                type: "string"
+            },
+            {
+                key: "pane-switcher-fkey",
+                value: "F9",
                 type: "string"
             }
         ];
