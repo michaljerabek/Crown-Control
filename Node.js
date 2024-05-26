@@ -23,7 +23,6 @@
             _domainManager.registerDomain(DOMAIN_NAME, {major: 0, minor: 1});
         }
 
-
         domainManager.registerCommand(
             DOMAIN_NAME,
             "init",

@@ -5,120 +5,94 @@ define(function (require, exports, module) {
 
     "use strict";
 
-    var EditorManager = brackets.getModule("editor/EditorManager");
+    const EditorManager = brackets.getModule("editor/EditorManager");
+    const Decimal = require("node_modules/decimal.js/decimal");
 
+    const CrownConnection = require("CrownConnection");
+    const ModifierKeys = require("ModifierKeys");
+    const Options = require("Options");
 
-    var CrownConnection = require("CrownConnection"),
-        ModifierKeys = require("ModifierKeys"),
+    const TOOL_IDS = {
+        both: "IncOrDecNumber",
+        ratchet: "IncOrDecNumberRatchet",
+        noratchet: "IncOrDecNumberWithoutRatchet"
+    };
+    let TOOL_ID = TOOL_IDS.ratchet;
 
-        Decimal = require("node_modules/decimal.js/decimal"),
-        Options = require("Options");
+    const TEST_REGEX = /-?\d*\.?\d+/g;
+    const TEST_COMMA_SPACE = /\s*,\s*|(?!,)\s+(?!,)/gi;
+    const TEST_RGB_REGEX = /rgba?\([0-9, %.]+\)/gi;
+    const TEST_HSL_REGEX = /hsla?\([0-9, %.\-]+\)/gi;
+    const TEST_BEZIER_REGEX = /cubic-bezier\([0-9, .\-]+\)/gi;
+    const TEST_LINEAR_REGEX = /linear\([0-9, %.\-]+\)/gi;
+    const TEST_CSS_TRANSFORMS = /(?:scale|scaleX|scaleY|scaleZ|scale3d|matrix|matrix3d)\([0-9, .\-]+\)/gi;
+    const TEST_ROTATE3D = /rotate3d\([0-9, .\-]+(?:turn|deg|rad|grad)\s*\)/gi;
+    const TEST_CSS_FILTERS = /(?:brightness|contrast|grayscale|invert|opacity|saturate|sepia)\(\s*[0-9.]+%?\s*\)/gi;
+    const TEST_CSS_FILTER_WITH_LENGTH_VALUES = /(?:(?:blur)\(\s*[0-9.]+[^)]+\))|(?:(?:drop-shadow)\([^)]+\)\s*\)?)/gi;
+    const TEST_UNITS_WITH_SMALL_VALUES = /(?:-?\d*\.?\d+)(em|rem|cm|pc|turn|rad)/gi;
+    const TEST_UNITS_MS = /(?:-?\d*\.?\d+)ms/gi;
+    const TEST_UNITS_S = /(?:-?\d*\.?\d+)s/gi;
+    //const TEST_POSITIVE_ONLY = /(?:(?:min-|max-)?width|(?:min-|max-)?height|flex-basis|flex-grow|flex-shrink)[: ]\s*[0-9.]+[^;'"]*(?:\s*[;'"]|\s*$)/gi;
+    //const TEST_LINEHEIGHT = /line-height[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi;
+    //const TEST_OPACITY = /opacity[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi;
+    //const TEST_FONTWEIGHT = /font-weight[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi;
 
-    var TOOL_IDS = {
-            both: "IncOrDecNumber",
-            ratchet: "IncOrDecNumberRatchet",
-            noratchet: "IncOrDecNumberWithoutRatchet"
-        },
-        TOOL_ID = TOOL_IDS.ratchet,
+    const UPDATE_UI_TIMEOUT = 150;
+    let updateUIOnTouchTimeout;
+    const CLEAR_LAST_SELECTION_TIMEOUT = 3000;
+    let clearLastSelectionTimeout;
 
-        TEST_REGEX = /-?\d*\.?\d+/g,
-        TEST_RGB_REGEX = /rgba?\([0-9, %.]+\)/gi,
-        TEST_HSL_REGEX = /hsla?\([0-9, %.\-]+\)/gi,
-        TEST_BEZIER_REGEX = /cubic-bezier\([0-9, .\-]+\)/gi,
-        TEST_CSS_TRANSFORMS = /(?:scale|scaleX|scaleY|scaleZ|scale3d|matrix|matrix3d)\([0-9, .\-]+\)/gi,
-        TEST_ROTATE3D = /rotate3d\([0-9, .\-]+(?:turn|deg|rad|grad)\s*\)/gi,
-        TEST_CSS_FILTERS = /(?:brightness|contrast|grayscale|invert|opacity|saturate|sepia)\(\s*[0-9.]+%?\s*\)/gi,
-        TEST_CSS_FILTER_WITH_LENGTH_VALUES = /(?:(?:blur)\(\s*[0-9.]+[^)]+\))|(?:(?:drop-shadow)\([^)]+\)\s*\)?)/gi,
-        TEST_UNITS_WITH_SMALL_VALUES = /(?:-?\d*\.?\d+)(em|rem|cm|pc|turn|rad)/gi,
-        TEST_UNITS_MS = /(?:-?\d*\.?\d+)ms/gi,
-        TEST_UNITS_S = /(?:-?\d*\.?\d+)s/gi,
-        //TEST_POSITIVE_ONLY = /(?:(?:min-|max-)?width|(?:min-|max-)?height|flex-basis|flex-grow|flex-shrink)[: ]\s*[0-9.]+[^;'"]*(?:\s*[;'"]|\s*$)/gi,
-        //TEST_LINEHEIGHT = /line-height[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi,
-        //TEST_OPACITY = /opacity[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi,
-        //TEST_FONTWEIGHT = /font-weight[: ]\s*[0-9.\-]+(?:\s*[;'"]|\s*$)/gi,
-
-        UPDATE_UI_TIMEOUT = 150,
-
-        CLEAR_LAST_SELECTION_TIMEOUT = 3000;
-
-
-    var originCounter = 0,
-
-        enabled = false,
-
-        updateUIOnTouchTimeout,
-
-        modifiersForCurrentUse = [],
-        modifiersForCurrentUseInitUpdate = false,
-
-        lastSelection = null,
-        lastOptionWasCross = false,
-        clearLastSelectionTimeout,
-
-        numbersNegativity = {};
+    let originCounter = 0;
+    let enabled = false;
+    let lastSelection = null;
+    let lastOptionWasCross = false;
+    
+    let modifiersForCurrentUse = [];
+    let modifiersForCurrentUseInitUpdate = false;
+    let numbersNegativity = {};
 
     function noNegativeValue(value) {
-
         return Math.max(0, value);
     }
 
     function getMinMaxFn(min, max) {
-
-        return function (value) {
-
-            return Math.min(max, Math.max(min, value));
-        };
+        return value => Math.min(max, Math.max(min, value));
     }
 
     function smallNumberIncOrDecModifier(value) {
-
-        var decimal = new Decimal(value);
-
+        const decimal = new Decimal(value);
         return Math.max(0.0001, Math.min(decimal.div(10), 1));
     }
 
     function smallNumberIncOrDecModifierNoLimit(value) {
-
-        var decimal = new Decimal(value);
-
+        const decimal = new Decimal(value);
         return decimal.div(10).toNumber();
     }
 
-
-    var MODIFIERS = [
+    const MODIFIERS = [
         {//RGB(A)
             TEST: TEST_RGB_REGEX,
             VALUEFN: (function() {
-
-                var zero100Fn = getMinMaxFn(0, 100),
-                    zero1Fn = getMinMaxFn(0, 1),
-                    zero255Fn = getMinMaxFn(0, 255);
+                const zero100Fn = getMinMaxFn(0, 100);
+                const zero1Fn = getMinMaxFn(0, 1);
+                const zero255Fn = getMinMaxFn(0, 255);
 
                 return function (match, numberPos) {
-
-                    var values = match[0].match(/[0-9.]+%?/gi),
-
-                        pct = values[numberPos].indexOf("%") !== -1;
-
+                    const values = match[0].match(/[0-9.]+%?/gi);
+                    const pct = values[numberPos].indexOf("%") !== -1;
                     if (numberPos < 3) {
-
                         return pct ? zero100Fn: zero255Fn;
                     }
-
                     return pct ? zero100Fn: zero1Fn;
                 };
             }()),
             MODIFIERFN: function (match, numberPos) {
-
                 if (numberPos !== 3) {
-
                     return null;
                 }
 
-                var values = match[0].match(/[0-9.]+%?/gi),
-
-                    pct = values[numberPos].indexOf("%") !== -1;
-
+                const values = match[0].match(/[0-9.]+%?/gi);
+                const pct = values[numberPos].indexOf("%") !== -1;
                 return pct ? null: smallNumberIncOrDecModifier;
             },
             MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
@@ -126,48 +100,36 @@ define(function (require, exports, module) {
         {//HSL(A)
             TEST: TEST_HSL_REGEX,
             VALUEFN: (function() {
-
-                var zero100Fn = getMinMaxFn(0, 100),
-                    zero1Fn = getMinMaxFn(0, 1),
-                    rotate360Fn = function (value) {
-
-                        var decimalValue = new Decimal(value);
-
-                        return value < 0 ?
-                            decimalValue.mod(360).add(360).toNumber():
+                const zero100Fn = getMinMaxFn(0, 100);
+                const zero1Fn = getMinMaxFn(0, 1);
+                const rotate360Fn = function (value) {
+                    const decimalValue = new Decimal(value);
+                    return value < 0 ?
+                        decimalValue.mod(360).add(360).toNumber():
                         decimalValue.mod(360).toNumber();
-                    };
+                };
 
                 return function (match, numberPos) {
-
                     if (numberPos === 0) {
-
                         return rotate360Fn;
                     }
 
                     if (numberPos === 3) {
-
-                        var values = match[0].match(/[0-9.]+%?/gi),
-
-                            pct = values[numberPos].indexOf("%") !== -1;
-
+                        const values = match[0].match(/[0-9.]+%?/gi);
+                        const pct = values[numberPos].indexOf("%") !== -1;
                         return pct ? zero100Fn: zero1Fn;
                     }
-
+                    
                     return zero100Fn;
                 };
             }()),
             MODIFIERFN: function (match, numberPos) {
-
                 if (numberPos !== 3) {
-
                     return null;
                 }
 
-                var values = match[0].match(/[0-9.]+%?/gi),
-
-                    pct = values[numberPos].indexOf("%") !== -1;
-
+                const values = match[0].match(/[0-9.]+%?/gi);
+                const pct = values[numberPos].indexOf("%") !== -1;
                 return pct ? null: smallNumberIncOrDecModifier;
             },
             MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
@@ -182,41 +144,38 @@ define(function (require, exports, module) {
             MODIFIER3: smallNumberIncOrDecModifier,
             MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
         },
+        {//LINEAR
+            TEST: TEST_LINEAR_REGEX,
+            MODIFIERFN: function (match, numberPos, selection) {
+                numberPos = findNumberPositionInSpaceAndCommaList(match, selection);
+                const values = match[0].match(/[0-9.]+%?/gi);
+                const pct = values[numberPos].indexOf("%") !== -1;
+                return pct ? null: smallNumberIncOrDecModifierNoLimit;
+            },
+            MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
+        },
         {//BLUR
             TEST: TEST_CSS_FILTER_WITH_LENGTH_VALUES,
             VALUEFN: function (match, numberPos, selection) {
-
                 if (match[0].match(/^\s*drop-shadow/i)) {
-
-                    var valueStart = match[0].match(/[0-9]/) ? match[0].match(/[0-9]/).index : 0;
-
+                    const valueStart = match[0].match(/[0-9]/) ? match[0].match(/[0-9]/).index: 0;
                     numberPos = findNumberPositionInSpaceList(match, selection, valueStart);
-
                     if (numberPos !== 2) {
-
                         return null;
                     }
                 }
-
+                
                 return noNegativeValue;
             },
             MODIFIERFN: function (match, numberPos, selection) {
-
-                var unit;
-
                 if (match[0].match(/^\s*drop-shadow/i)) {
-
-                    var valueStart = match[0].match(/[0-9]/) ? match[0].match(/[0-9]/).index : 0;
-
+                    const valueStart = match[0].match(/[0-9]/) ? match[0].match(/[0-9]/).index: 0;
                     numberPos = findNumberPositionInSpaceList(match, selection, valueStart);
-
-                    unit = match[0].match(/[0-9.]+[a-z]+/gi);
-
+                    const unit = match[0].match(/[0-9.]+[a-z]+/gi);
                     return unit && unit[numberPos].match(TEST_UNITS_WITH_SMALL_VALUES) ? smallNumberIncOrDecModifierNoLimit: null;
                 }
 
-                unit = match[0].match(/[0-9.]+[a-z]+/gi);
-
+                const unit = match[0].match(/[0-9.]+[a-z]+/gi);
                 return unit && unit[0].match(TEST_UNITS_WITH_SMALL_VALUES) ? smallNumberIncOrDecModifierNoLimit: null;
             },
             MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
@@ -225,9 +184,7 @@ define(function (require, exports, module) {
             TEST: TEST_POSITIVE_ONLY,
             VALUE: noNegativeValue,
             MODIFIERFN: function (match) {
-
-                var unit = match[0].match(/[0-9.]+[a-z]+/gi);
-
+                const unit = match[0].match(/[0-9.]+[a-z]+/gi);
                 return unit && unit[0].match(TEST_UNITS_WITH_SMALL_VALUES) ? smallNumberIncOrDecModifierNoLimit: null;
             }
         },*/
@@ -239,9 +196,7 @@ define(function (require, exports, module) {
         {//MS, ...
             TEST: TEST_UNITS_MS,
             MODIFIER: function (value) {
-
-                var decimal = new Decimal(value);
-
+                const decimal = new Decimal(value);
                 return decimal.mul(10).toNumber();
             },
             MODIFIER_OPTION_KEY: "inc-dec-number-units-step"
@@ -249,9 +204,7 @@ define(function (require, exports, module) {
         {//S, ...
             TEST: TEST_UNITS_S,
             MODIFIER: function (value) {
-
-                var decimal = new Decimal(value);
-
+                const decimal = new Decimal(value);
                 return decimal.div(10).toNumber();
             },
             MODIFIER_OPTION_KEY: "inc-dec-number-units-step"
@@ -269,39 +222,29 @@ define(function (require, exports, module) {
             TEST: TEST_FONTWEIGHT,
             VALUE: getMinMaxFn(0, 1000),
             MODIFIER: function (value) {
-
-                var decimal = new Decimal(value);
-
+                const decimal = new Decimal(value);
                 return decimal.mul(100).toNumber();
             }
         },*/
         {//GRAYSCALE, ...
             TEST: TEST_CSS_FILTERS,
             VALUEFN: (function() {
-
-                var zero1Fn = getMinMaxFn(0, 1),
-                    zero100Fn = getMinMaxFn(0, 100);
+                const zero1Fn = getMinMaxFn(0, 1);
+                const zero100Fn = getMinMaxFn(0, 100);
 
                 return function (match) {
-
-                    var values = match[0].match(/[0-9.]+%?/gi),
-
-                        pct = values[0].indexOf("%") !== -1;
-
+                    const values = match[0].match(/[0-9.]+%?/gi);
+                    const pct = values[0].indexOf("%") !== -1;
                     if (match[0].match(/sepia|opacity|grayscale|invert/)) {
-
-                        return pct ? zero100Fn : zero1Fn;
+                        return pct ? zero100Fn: zero1Fn;
                     }
 
                     return noNegativeValue;
                 };
             }()),
             MODIFIERFN: function (match) {
-
-                var values = match[0].match(/[0-9.]+%?/gi),
-
-                    pct = values[0].indexOf("%") !== -1;
-
+                const values = match[0].match(/[0-9.]+%?/gi);
+                const pct = values[0].indexOf("%") !== -1;
                 return pct ? null: smallNumberIncOrDecModifier;
             },
             MODIFIER_OPTION_KEY: "inc-dec-number-other-step"
@@ -314,14 +257,11 @@ define(function (require, exports, module) {
         {//ROTATE3D (?)
             TEST: TEST_ROTATE3D,
             MODIFIERFN: function (match, numberPos) {
-
                 if (numberPos < 3) {
-
                     return smallNumberIncOrDecModifier;
                 }
 
                 if (numberPos === 3 && match[0].match(/turn|rad/)) {
-
                     return smallNumberIncOrDecModifierNoLimit;
                 }
 
@@ -332,13 +272,10 @@ define(function (require, exports, module) {
     ];
 
     function getMatchForSelection(text, regex, selection) {
-
         regex.lastIndex = 0;
 
-        var match = regex.exec(text);
-
+        let match = regex.exec(text);
         while (match && !(match.index <= selection.start.ch && match.index + match[0].length >= selection.start.ch)) {
-
             match = regex.exec(text);
         }
 
@@ -346,17 +283,14 @@ define(function (require, exports, module) {
     }
 
     function updateUI(value) {
-
-        var isSameModifier = modifiersForCurrentUse.every(function (modifier) {
+        const isSameModifier = modifiersForCurrentUse.every(function (modifier) {
             return modifier.MODIFIER === modifiersForCurrentUse[0].MODIFIER;
         });
 
-        if (isSameModifier && modifiersForCurrentUse[0] && modifiersForCurrentUse[0].MODIFIER) {
-
+        if (isSameModifier && modifiersForCurrentUse[0]?.MODIFIER) {
             value = modifiersForCurrentUse[0].MODIFIER(value);
         }
-
-        value = "\u00B1" + (isSameModifier ?  value : "?");
+        value = "\u00B1" + (isSameModifier ? value: "?");
 
         CrownConnection.updateTool(exports.getToolId(), [{
             name: "",
@@ -364,75 +298,65 @@ define(function (require, exports, module) {
         }]);
     }
 
-    function findNumberPositionInSpaceList(match, selection, offset) {
-
-        offset = offset || 0;
-
-        var index = match[0].indexOf(" ", offset),
-            position = 0;
-
+    function findNumberPositionInSpaceList(match, selection, offset = 0) {
+        let index = match[0].indexOf(" ", offset);
+        let position = 0;
         while (index !== -1) {
-
             if (selection.start.ch - match.index > index) {
-
                 position++;
             }
-
             index = match[0].indexOf(" ", index + 1);
         }
-
         return position;
     }
 
     function findNumberPositionInCommaList(match, selection) {
-
-        var index = match[0].indexOf(","),
-            position = 0;
-
+        let index = match[0].indexOf(",");
+        let position = 0;
         while (index !== -1) {
-
             if (selection.start.ch - match.index > index) {
-
                 position++;
             }
-
             index = match[0].indexOf(",", index + 1);
         }
+        return position;
+    }
 
+    function findNumberPositionInSpaceAndCommaList(match, selection) {
+        TEST_COMMA_SPACE.lastIndex = 0;
+        
+        let test = TEST_COMMA_SPACE.exec(match[0]);
+        let position = 0;
+        while (test !== null) {
+            if (selection.start.ch - match.index > test.index) {
+                position++;
+            }
+            test = TEST_COMMA_SPACE.exec(match[0]);
+        }
         return position;
     }
 
     function findModifierForSelection(text, selection) {
-
-        var foundModifier = {
+        const foundModifier = {
             VALUE: null,
             MODIFIER: null
         };
 
         MODIFIERS.some(function (modifier) {
-
-            var numberPos = 0,
-                match = getMatchForSelection(text, modifier.TEST, selection);
+            const match = getMatchForSelection(text, modifier.TEST, selection);
 
             if (match) {
-
-                numberPos = findNumberPositionInCommaList(match, selection);
+                const numberPos = findNumberPositionInCommaList(match, selection);
 
                 foundModifier.VALUE = modifier["VALUE" + numberPos] || modifier.VALUE || null;
                 foundModifier.MODIFIER = modifier["MODIFIER" + numberPos] || modifier.MODIFIER || null;
-
                 if (modifier.VALUEFN) {
-
                     foundModifier.VALUE = modifier.VALUEFN(match, numberPos, selection);
                 }
-
                 if (modifier.MODIFIERFN) {
-
                     foundModifier.MODIFIER = modifier.MODIFIERFN(match, numberPos, selection);
                 }
-
                 if (modifier.MODIFIER_OPTION_KEY && Options.get(modifier.MODIFIER_OPTION_KEY) === false) {
-
                     foundModifier.MODIFIER = null;
                 }
 
@@ -444,7 +368,6 @@ define(function (require, exports, module) {
     }
 
     function getChangeByValue() {
-
         switch (true) {
             case ModifierKeys.shiftKey && ModifierKeys.ctrlKey && ModifierKeys.altKey: return 0.0001;
             case ModifierKeys.shiftKey && ModifierKeys.ctrlKey: return 1000;
@@ -458,42 +381,33 @@ define(function (require, exports, module) {
     }
 
     CrownConnection.on("crown_touch_event", function (crownMsg) {
-
         clearTimeout(updateUIOnTouchTimeout);
 
         if (enabled && crownMsg.touch_state) {
-
             clearTimeout(clearLastSelectionTimeout);
-
             updateUIOnTouchTimeout = setTimeout(function() {
                 updateUI(getChangeByValue());
             }, UPDATE_UI_TIMEOUT);
         }
 
         if (enabled && !crownMsg.touch_state && lastOptionWasCross) {
-
             clearTimeout(clearLastSelectionTimeout);
-
-            clearLastSelectionTimeout = setTimeout(function() {
-
-                lastSelection = null;
-
-            }, CLEAR_LAST_SELECTION_TIMEOUT);
+            clearLastSelectionTimeout = setTimeout(
+                () => (lastSelection = null), 
+                CLEAR_LAST_SELECTION_TIMEOUT
+            );
         }
     });
 
     ModifierKeys.on("change", function () {
-
         clearTimeout(updateUIOnTouchTimeout);
 
         if (enabled) {
-
             updateUI(getChangeByValue());
         }
     });
 
     exports.getDefaultOptions = function () {
-
         return [
             {
                 key: "inc-dec-number-tool",
@@ -514,7 +428,6 @@ define(function (require, exports, module) {
     };
 
     exports.getOptions = function () {
-
         return {
             tool: "Numbers",
             list: [
@@ -556,43 +469,28 @@ define(function (require, exports, module) {
     };
 
     exports.disable = function () {
-
         clearTimeout(updateUIOnTouchTimeout);
-
         enabled = false;
     };
 
     exports.shouldBeUsed = function () {
-
-        var editor = EditorManager.getActiveEditor();
-
-        if (!editor) {
-
-            return false;
-        }
+        const editor = EditorManager.getActiveEditor();
+        if (!editor) return false;
 
         modifiersForCurrentUse = [];
-
-        var selections = editor.getSelections(),
-
-            isNumber = selections.some(function (selection) {
-
-                var currentLineNumber = selection.start.line,
-                    currentLine = editor.document.getLine(currentLineNumber);
-
-                return getMatchForSelection(currentLine, TEST_REGEX, selection);
-            });
+        const selections = editor.getSelections();
+        const isNumber = selections.some(function (selection) {
+            const currentLineNumber = selection.start.line;
+            const currentLine = editor.document.getLine(currentLineNumber);
+            return getMatchForSelection(currentLine, TEST_REGEX, selection);
+        });
 
         if (isNumber) {
-
             selections.forEach(function (selection) {
-
-                var currentLineNumber = selection.start.line,
-                    currentLine = editor.document.getLine(currentLineNumber);
-
+                const currentLineNumber = selection.start.line;
+                const currentLine = editor.document.getLine(currentLineNumber);
                 modifiersForCurrentUse.push(findModifierForSelection(currentLine, selection));
             });
-
             modifiersForCurrentUseInitUpdate = true;
         }
 
@@ -600,87 +498,62 @@ define(function (require, exports, module) {
     };
 
     exports.getToolId = function () {
-
         TOOL_ID = Options.get("inc-dec-number-tool") || TOOL_ID;
-
         return TOOL_ID;
     };
 
     exports.use = function () {
-
         enabled = true;
-
         CrownConnection.changeTool(exports.getToolId());
     };
 
     exports.update = function (crownMsg) {
-
         if (crownMsg.task_options.current_tool !== TOOL_ID) {
-
             return;
         }
 
         if (!crownMsg.ratchet_delta || !crownMsg.delta) {
-
             return;
         }
 
-        var editor = EditorManager.getActiveEditor();
+        const editor = EditorManager.getActiveEditor();
+        if (!editor) return;
 
-        if (!editor) {
+        const origin = "crowncontrol.incordecnumber" + originCounter++;
+        const crossDirection = !!crownMsg.task_options.current_tool_option.match(/NumberCross/i);
+        const useSelection = !!crownMsg.task_options.current_tool_option.match(/PlusSelection$/i);
+        const defaultChangeByValue = getChangeByValue();
+        const inlineTextPositionChange = {};
 
-            return;
-        }
-
-        var selections = editor.getSelections(),
-
-            origin = "crowncontrol.incordecnumber" + originCounter++,
-
-            inlineTextPositionChange = {},
-
-            defaultChangeByValue = getChangeByValue(),
-
-            crossDirection = !!crownMsg.task_options.current_tool_option.match(/NumberCross/i),
-            useSelection = !!crownMsg.task_options.current_tool_option.match(/PlusSelection$/i),
-            isSameSelection = false,
-
-            changes;
+        let selections = editor.getSelections();
+        let isSameSelection = false;
+        let changes;
 
         lastOptionWasCross = crossDirection;
 
         selections = selections.map(function (selection) {
-
-            var currentLineNumber = selection.start.line,
-                currentLine = editor.document.getLine(currentLineNumber),
-
-                currentText = "",
-                selectedNumberMatch = "",
-
-                currentTextRange;
+            const currentLineNumber = selection.start.line;
+            const currentLine = editor.document.getLine(currentLineNumber);
+            let currentText = "";
+            let selectedNumberMatch = "";
+            let currentTextRange;
 
             inlineTextPositionChange[currentLineNumber] = inlineTextPositionChange[currentLineNumber] || 0;
 
             if (useSelection) {
-
                 if (selection.start.ch === selection.end.ch) {
+                    return null;
+                }
 
+                if (!currentLine.match(TEST_REGEX)) {
                     return null;
                 }
 
                 currentText = editor.document.getRange(selection.start, selection.end);
-
-                if (!currentLine.match(TEST_REGEX)) {
-
-                    return null;
-                }
-
                 selectedNumberMatch = {
                     index: selection.start.ch,
-                    toString: function () {
-                        return currentText;
-                    }
+                    toString: () => currentText
                 };
-
                 currentTextRange = {
                     start: {
                         line: selection.start.line,
@@ -692,13 +565,10 @@ define(function (require, exports, module) {
                     }
                 };
             } else {
-
                 selectedNumberMatch = getMatchForSelection(currentLine, TEST_REGEX, selection);
-
+                
                 if (selectedNumberMatch) {
-
                     currentText = selectedNumberMatch[0];
-
                     currentTextRange = {
                         start: {
                             line: currentLineNumber,
@@ -713,7 +583,6 @@ define(function (require, exports, module) {
             }
 
             if (selectedNumberMatch) {
-
                 return {
                     selection: selection,
                     currentText: currentText,
@@ -725,94 +594,70 @@ define(function (require, exports, module) {
             }
 
             return null;
+        });
+        selections = selections.filter(selection => !!selection);
 
-        }).filter(function (selection) { return !!selection; });
-
-        isSameSelection = lastSelection === JSON.stringify(selections.map(function (selection) { return [selection.currentTextRange, selection.currentText]; }));
-
+        isSameSelection = lastSelection === JSON.stringify(selections.map(selection => [selection.currentTextRange, selection.currentText]));
         if (!isSameSelection) {
-
             if (!modifiersForCurrentUseInitUpdate) {
-
                 modifiersForCurrentUse = selections.map(function (selection) {
                     return findModifierForSelection(selection.currentLine, selection.selection);
                 });
             }
-
             numbersNegativity = {};
         }
 
         modifiersForCurrentUseInitUpdate = false;
 
         changes = selections.map(function (selection, s) {
-
-            var currentLineNumber = selection.currentLineNumber,
-
-                selectedNumberMatch = selection.selectedNumberMatch,
-
-                currentTextRange = selection.currentTextRange,
-
-                currentText = selection.currentText,
-                updatedText = currentText,
-
-                updatedTextRange = {
-                    start: {
-                        line: currentLineNumber,
-                        ch: selectedNumberMatch.index + inlineTextPositionChange[currentLineNumber]
-                    },
-                    end: {
-                        line: currentLineNumber,
-                        ch: selectedNumberMatch.index + currentText.length + inlineTextPositionChange[currentLineNumber]
-                    }
+            const currentLineNumber = selection.currentLineNumber;
+            const selectedNumberMatch = selection.selectedNumberMatch;
+            const currentTextRange = selection.currentTextRange;
+            const currentText = selection.currentText;
+            const updatedTextRange = {
+                start: {
+                    line: currentLineNumber,
+                    ch: selectedNumberMatch.index + inlineTextPositionChange[currentLineNumber]
                 },
-
-                changeByValue = defaultChangeByValue,
-
-                decimalCurrentNumber = new Decimal(currentText),
-
-                operation = (crownMsg.ratchet_delta || crownMsg.delta) > 0 ? "add" : "sub";
+                end: {
+                    line: currentLineNumber,
+                    ch: selectedNumberMatch.index + currentText.length + inlineTextPositionChange[currentLineNumber]
+                }
+            };
+            let updatedText = currentText;
+            let changeByValue = defaultChangeByValue;
+            let operation = (crownMsg.ratchet_delta || crownMsg.delta) > 0 ? "add" : "sub";
+            let decimalCurrentNumber = new Decimal(currentText);
 
             if (modifiersForCurrentUse[s] && modifiersForCurrentUse[s].MODIFIER) {
-
                 changeByValue = modifiersForCurrentUse[s].MODIFIER(defaultChangeByValue);
             }
 
             if (crossDirection) {
-
                 if (typeof numbersNegativity[s] === "undefined") {
-
                     numbersNegativity[s] = currentText.indexOf("-") !== -1;
                 }
 
                 if (numbersNegativity[s]) {
-
                     operation = operation === "add" ? "sub" : "add";
                 }
             }
 
             decimalCurrentNumber = decimalCurrentNumber[operation](changeByValue);
-
             if (modifiersForCurrentUse[s] && modifiersForCurrentUse[s].VALUE) {
-
-                var afterChangeNumber = decimalCurrentNumber.toNumber(),
-                    modified = modifiersForCurrentUse[s].VALUE(afterChangeNumber);
+                const afterChangeNumber = decimalCurrentNumber.toNumber();
+                const modified = modifiersForCurrentUse[s].VALUE(afterChangeNumber);
 
                 if (modified !== afterChangeNumber) {
-
                     updatedText = String(modified);
-
                 } else {
-
                     updatedText = decimalCurrentNumber.toString();
                 }
-
             } else {
-
                 updatedText = decimalCurrentNumber.toString();
             }
 
             updatedTextRange.end.ch = currentTextRange.start.ch + updatedText.length + inlineTextPositionChange[currentLineNumber];
-
             inlineTextPositionChange[currentLineNumber] += updatedText.length - currentText.length;
 
             return {
@@ -820,27 +665,21 @@ define(function (require, exports, module) {
                 afterRange: updatedTextRange,
                 replacement: updatedText
             };
-
         });
 
         if (changes && changes.length) {
-
-            var edits = changes.map(function (change) {
-
+            const edits = changes.map(function (change) {
                 change.currentRange.text = change.replacement;
-
                 return {
                     edit: change.currentRange
                 };
             });
 
             editor.document.doMultipleEdits(edits, origin);
-
-            editor.setSelections(changes.map(function (change) { return change.afterRange; }), undefined, undefined, origin);
-
+            editor.setSelections(changes.map(change => change.afterRange), undefined, undefined, origin);
+            
             if (crossDirection) {
-
-                lastSelection = JSON.stringify(changes.map(function (change) { return [change.afterRange, change.replacement]; }));
+                lastSelection = JSON.stringify(changes.map(change => [change.afterRange, change.replacement]));
             }
 
             updateUI(defaultChangeByValue);

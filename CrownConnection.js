@@ -3,18 +3,11 @@
 
 define(function (require, exports, module) {
 
-    var WS_ADDRESS = "ws://127.0.0.1:10134",
-
-        PLUGIN_GUID = "9df01287-806d-4292-9ee4-2c6e477fee55";
-
-    var RECONNECT_TIMEOUT = 2000;
-
-    var ws,
-        reconnectTimeout,
-        reconnecting,
-        sessionId;
-
-    var eventHandlers = {
+    const PLUGIN_GUID = "11c8bb28-9fca-4489-a59f-bd11c0d689c5";
+    let sessionId = "";
+    let nodeConnector = null;
+    
+    const eventHandlers = {
         activate_plugin: [],
         deactivate_plugin: [],
         crown_touch_event: [],
@@ -25,126 +18,19 @@ define(function (require, exports, module) {
         error: []
     };
 
-    function reconnect(platform, pid) {
-
-        if (!reconnecting) {
-
-            console.log("CROWNCONTROL: reconnect");
-
-            ws = null;
-
-            clearInterval(reconnectTimeout);
-
-            reconnectTimeout = setInterval(createConnection.bind(null, platform, pid), RECONNECT_TIMEOUT);
-        }
-    }
-
     function registerPlugin(platform, pid) {
-
-        if (!ws) {
-
-            return;
-        }
-
-        ws.send(JSON.stringify({
+        nodeConnector?.execPeer("send", JSON.stringify({
             message_type: "register",
             plugin_guid: PLUGIN_GUID,
             PID: Number(pid),
-            execName: platform === "darwin" ? "Brackets.app": "Brackets.exe"
+            execName: platform.startsWith("win") ? 
+                "Phoenix Code Experimental Build.exe": 
+                "Phoenix Code Experimental Build.app"
         }));
     }
 
-    function createConnection(platform, pid) {
-
-        if (ws || reconnecting) {
-
-            return;
-        }
-
-        //console.info("CROWNCONTROL: create");
-
-        reconnecting = true;
-
-        ws = new WebSocket(WS_ADDRESS);
-
-        ws.onopen = function (event) {
-
-            //console.info("CROWNCONTROL: open");
-
-            clearInterval(reconnectTimeout);
-
-            reconnecting = false;
-
-            registerPlugin(platform, pid);
-
-            eventHandlers.open.forEach(function (eventHandlerFn) {
-                eventHandlerFn(event);
-            });
-        };
-
-        ws.onmessage = function (msg) {
-
-            var jsonObj = JSON.parse(msg.data);
-
-            //console.info("CROWNCONTROL: " + jsonObj.message_type);
-            //console.log(jsonObj);
-
-            eventHandlers.message.forEach(function (eventHandlerFn) {
-                eventHandlerFn(msg, jsonObj);
-            });
-
-            if (jsonObj.message_type === "register_ack") {
-
-                sessionId = jsonObj.session_id;
-
-                return;
-            }
-
-            if (eventHandlers[jsonObj.message_type]) {
-
-                eventHandlers[jsonObj.message_type].forEach(function (eventHandlerFn) {
-                    eventHandlerFn(jsonObj, msg);
-                });
-            }
-        };
-
-        ws.onclose = function (event) {
-
-            console.info("CROWNCONTROL: close");
-            console.log(event);
-
-            reconnecting = false;
-
-            eventHandlers.close.forEach(function (eventHandlerFn) {
-                eventHandlerFn(event);
-            });
-
-            reconnect(platform, pid);
-        };
-
-        ws.onerror = function (event) {
-
-            console.error("CROWNCONTROL: error");
-            console.log(event);
-
-            reconnecting = false;
-
-            eventHandlers.error.forEach(function (eventHandlerFn) {
-                eventHandlerFn(event);
-            });
-
-            ws.close();
-        };
-    }
-
     exports.changeTool = function changeTool(toolId) {
-
-        if (!ws) {
-
-            return;
-        }
-
-        ws.send(JSON.stringify({
+        nodeConnector?.execPeer("send", JSON.stringify({
             message_type: "tool_change",
             session_id: sessionId,
             tool_id: toolId
@@ -152,13 +38,7 @@ define(function (require, exports, module) {
     };
 
     exports.updateTool = function updateTool(toolId, options, showOverlay) {
-
-        if (!ws) {
-
-            return;
-        }
-
-        ws.send(JSON.stringify({
+        nodeConnector?.execPeer("send", JSON.stringify({
             message_type: "tool_update",
             session_id: sessionId,
             tool_id: toolId,
@@ -168,15 +48,38 @@ define(function (require, exports, module) {
     };
 
     exports.on = function (event, handler) {
-
-        if (eventHandlers[event]) {
-
-            eventHandlers[event].push(handler);
-        }
+        eventHandlers[event]?.push(handler);
     };
 
-    exports.init = function (platform, pid) {
+    exports.init = async function (_nodeConnector, platform, pid) {
+        nodeConnector = _nodeConnector;
+        
+        nodeConnector?.execPeer("init");
+        
+        nodeConnector?.on("open", function (event, data) {
+            registerPlugin(platform, pid);
+            eventHandlers.open.forEach(fn => fn(data));
+        });
+        
+        nodeConnector?.on("message", function (event, message) {
+            const data = JSON.parse(message.data);
 
-        createConnection(platform, pid);
+            eventHandlers.message.forEach(fn => fn(message, data));
+
+            if (data.message_type === "register_ack") {
+                sessionId = data.session_id;
+                return;
+            }
+
+            eventHandlers[data.message_type]?.forEach(fn => fn(data, message));
+        });
+
+        nodeConnector?.on("close", function (event, data) {
+            eventHandlers.close.forEach(fn => fn(data));
+        });
+
+        nodeConnector?.on("error", function (event, data) {
+            eventHandlers.error.forEach(fn => fn(data));
+        });
     };
 });

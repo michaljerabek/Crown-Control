@@ -5,53 +5,40 @@ define(function (require, exports, module) {
 
     "use strict";
 
-    var MainViewManager = brackets.getModule("view/MainViewManager");
+    const MainViewManager = brackets.getModule("view/MainViewManager");
 
+    const CrownConnection = require("CrownConnection");
+    const Options = require("Options");
+    const ChangeFile = require("DefaultToolChangeFileOption");
+    const ResizePanes = require("DefaultToolResizePanesOption");
+    const Scroll = require("DefaultToolScrollOption");
+    const OPTIONS = [Scroll, ChangeFile, ResizePanes];
 
-    var CrownConnection = require("CrownConnection"),
-        Options = require("Options");
+    const TOOL_IDS = {
+        single: "DefaultTool",
+        cols: "DefaultToolSplitViewCols",
+        rows: "DefaultToolSplitViewRows",
+        onlyActivePostfix: "OnlyActive",
+        scrollPostfix: {
+            hor: "ScrollHor",
+            ver: "ScrollVer",
+            both: "ScrollBoth"
+        }
+    };
+    const TOOL_ID_REGEX = /^DefaultTool/;
 
-
-    var ChangeFile = require("DefaultToolChangeFileOption"),
-        ResizePanes = require("DefaultToolResizePanesOption"),
-        Scroll = require("DefaultToolScrollOption");
-
-
-    var TOOL_IDS = {
-            single: "DefaultTool",
-            cols: "DefaultToolSplitViewCols",
-            rows: "DefaultToolSplitViewRows",
-            onlyActivePostfix: "OnlyActive",
-            scrollPostfix: {
-                hor: "ScrollHor",
-                ver: "ScrollVer",
-                both: "ScrollBoth"
-            }
-        },
-        TOOL_ID_REGEX = /^DefaultTool/;
-
-
-    var OPTIONS = [Scroll, ChangeFile, ResizePanes];
-
-
-    var enabled = false,
-
-        usedOption = null;
-
+    let enabled = false;
+    let usedOption = null;
 
     CrownConnection.on("crown_touch_event", function (crownMsg) {
-
         if (enabled && !crownMsg.touch_state) {
-
             if (usedOption && usedOption.onTouchEnd) {
-
                 usedOption.onTouchEnd();
             }
         }
     });
 
     exports.getDefaultOptions = function () {
-
         return [
             {
                 key: "default-tool-with-inactive",
@@ -72,7 +59,6 @@ define(function (require, exports, module) {
     };
 
     exports.getOptions = function () {
-
         return {
             tool: "Default",
             list: [
@@ -110,47 +96,34 @@ define(function (require, exports, module) {
     };
 
     exports.disable = function () {
-
         enabled = false;
     };
 
     exports.shouldBeUsed = function () {
-
         return true;
     };
 
     exports.getToolId = function getToolId() {
-
-        var toolId = MainViewManager.getPaneCount() === 1 ?
-            TOOL_IDS.single:
-            MainViewManager.getLayoutScheme().columns !== 1 ?
-                TOOL_IDS.cols: TOOL_IDS.rows;
-
+        const isColumnLayout = MainViewManager.getLayoutScheme().columns !== 1;
+        const paneCount = MainViewManager.getPaneCount();
+        
+        let toolId = paneCount === 1 ? TOOL_IDS.single: isColumnLayout ? TOOL_IDS.cols: TOOL_IDS.rows;
         toolId += Options.get("default-tool-with-inactive") ? "": TOOL_IDS.onlyActivePostfix;
         toolId += Options.get("default-tool-scroll");
-
         return toolId;
     };
 
     exports.use = function () {
-
         enabled = true;
-
         CrownConnection.changeTool(exports.getToolId());
     };
 
     exports.update = function (crownMsg) {
-
         if (crownMsg.task_options.current_tool.match(TOOL_ID_REGEX)) {
-
             OPTIONS.some(function (option) {
-
                 if (option.shouldBeUsed(crownMsg)) {
-
                     usedOption = option;
-
                     option.update(crownMsg);
-
                     return true;
                 }
             });

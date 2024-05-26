@@ -1,56 +1,30 @@
-# Crown Control — Logitech Crown (Craft) integration for [Brackets](http://brackets.io/)
+# Crown Control — Logitech Crown (Craft) integration for [Phoenix Code](https://phcode.io/)
 
-*Probably won't work on macOS.*
+*Probably won't work on macOS. It was tested only inside a virtual machine, where it refuses to connect to Logitech Options. Any help with testing is welcome!*
 
 ## Installation Instructions
 
-**This is not an official way to install custom plugin for Logitech Options. But it works.** 
+After you have installed the extension:
 
-On Windows: After you have [installed the extension](https://github.com/adobe/brackets/wiki/Brackets-Extensions):
-
-1. Open Logitech Options and select your keyboard (Craft).
-2. Click on `All Applications` and select `Brackets`.
-3. Click on `More` > `Software` and enable `Developer Mode`.
-4. Open folder with extensions for Brackets (`Help` > `Show Extensions Folder`).
-5. Copy `9df01287-806d-4292-9ee4-2c6e477fee55` folder to `C:\ProgramData\Logishrd\LogiOptionsPlugins` (folder `LogiOptionsPlugins` has to be created).
-6. Go to `C:\Users\[YOUR_ACCOUNT]\AppData\Roaming\Logishrd\LogiOptions`.
-7. Open `apptable.xml` and find `<profile/>` for Brackets.
-8. Change `<id/>` to `9df01287-806d-4292-9ee4-2c6e477fee55`. (If there are other profiles for Brackets, remove them.)
-9. Copy `9df01287-806d-4292-9ee4-2c6e477fee55.xml` from the extension folder to `C:\Users\[YOUR_ACCOUNT]\AppData\Roaming\Logishrd\LogiOptions\devices\6b350\Profiles`.
-10. Kill all processes in Task Manager related to Logitech Options and close Brackets (or restart your computer).
-11. Run Logitech Options and Brackets.
-
-On macOS you can use the official method, but it may not work (it didn't work for me, but I tried it only in VirtualBox):
-
-1. Copy `9df01287-806d-4292-9ee4-2c6e477fee55` folder from the extension folder to `~/Library/Application Support/Logitech/Logitech Options/Plugins`.
-2. Enable `Developer Mode` in Logitech Options (`Logitech Options` > `Craft` > `More` > `Software`).
-3. Click on `All Applications` and install the profile.
-4. Click on `All Applications` > `Brackets` and then `Crown` > `Press` and set it to `F9`.
-5. Try it and if it works, let me know.
+1. Open folder with extensions for Phoenix Code (`Help` > `Show Extensions Folder`).
+2. Copy `11c8bb28-9fca-4489-a59f-bd11c0d689c5` folder to:
+    - Windows: `C:\ProgramData\Logishrd\LogiOptionsPlugins` (folder `LogiOptionsPlugins` has to be created).
+    - macOS: `~/Library/Application Support/Logitech/Logitech Options/Plugins`.
+3. Open Logitech Options and select your keyboard (Craft).
+4. Click on `More` > `Software` and enable `Developer Mode`.
+5. Click on `All Applications` and if there is a profile for `Phoenix Code` remove it.
+6. Click on `All Applications` > `Add Application` and install the profile. (If you don't see a green dot on the icon or the profile, restart Logitech Options or OS.)
+7. Click on `All Applications` > `Phoenix Code` and then `Crown` > `Press` and set it to `F9` (you may need to manually choose *Keystroke* option).
+8. Restart Phoenix Code.
 
 ## Update Instructions
 
-*This is necessary only if the profile has changed. You should be informed about that after an update.*
+*This is necessary only if the profile has changed. You should be informed about that after the update.*
 
-On Windows: 
-
-1. Open folder with extensions for Brackets (`Help` > `Show Extensions Folder`).
-2. Copy `9df01287-806d-4292-9ee4-2c6e477fee55` folder to `C:\ProgramData\Logishrd\LogiOptionsPlugins` (rewrite previous files).
-3. Kill all processes in Task Manager related to Logitech Options and close Brackets (or restart your computer).
-4. Run Logitech Options and Brackets.
-
-On macOS:
-
-1. In Logitech Options click on `All Applications`.
-2. Remove profile for `Brackets` (click on cross icon).
-3. Copy `9df01287-806d-4292-9ee4-2c6e477fee55` folder from the extension folder to `~/Library/Application Support/Logitech/Logitech Options/Plugins` (rewrite previous files).
-4. Click on `All Applications` and install the profile.
-5. Click on `All Applications` > `Brackets` and then `Crown` > `Press` and set it to `F9` (may not be necessary).
-
+1. Replace the profile (see installation instructions).
+2. Restart Phoenix Code (possibly Logitech Options or OS).
 
 ## How To Use
-
-*This is still in experimental state.*
 
 ### Press (Crown)
 Switches currently active pane or turns on *Split View*.
@@ -59,6 +33,8 @@ Switches currently active pane or turns on *Split View*.
 - `CTRL + ALT` — switches active pane and its size
 
 **It requires `F9` and `F9 + MODIFIER_KEYS` shortcuts to be available.**
+
+*Note: This behavior will probably change to support more then two panes.*
 
 ### Turn: Default
 
@@ -85,9 +61,11 @@ Available options:
     - `ALT` — active pane
 6. Resize panes
 
+*Note: This behavior will probably change to support more then two panes.*
+
 ### Turn: Numbers
 
-If the cursor(s) is on any number, you can increase or decrease it by a value based on the context (unit). (I'm not sure if this is a good thing.) 
+If the cursor(s) is on any number, you can increase or decrease it by a value based on the context (unit). 
 
 Available options:
 
@@ -213,3 +191,6 @@ In the project folder you can create a file named `crowncontrol.json` with prede
   - Colors can be changed from a list with predefined colors
 - 1.2.0
   - Options
+- 2.0.0
+  - Migration from Brackets to Phoenix Code
+  - Added support for `linear()` easing when adjusting numbers 

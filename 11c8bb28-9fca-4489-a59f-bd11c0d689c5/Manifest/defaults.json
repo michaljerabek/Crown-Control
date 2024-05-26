@@ -1,20 +1,19 @@
 {
-    "GUID": "9df01287-806d-4292-9ee4-2c6e477fee55",
+    "GUID": "11c8bb28-9fca-4489-a59f-bd11c0d689c5",
     "info": {
-        "name": "Brackets",
+        "name": "Phoenix Code",
         "publisher": "mjerabek.cz",
-        "version": "1.2.0",
-        "win_name": "Brackets.exe",
+        "version": "2.0.0",
+        "win_name": "Phoenix Code.exe",
         "win_minimum_supported_version": "0.0.0",
         "win_maximum_supported_version": "9999.0.0",
-        "mac_bundle": "Brackets.app",
-        "mac_path": "/Applications/Brackets.app",
+        "mac_bundle": "Phoenix Code.app",
+        "mac_path": "/Applications",
         "mac_paths": [
             {
-                "path": "/Applications/Brackets.app",
-                "mac_minimum_supported_version": "",
-                "mac_maximum_supported_version": "",
-                "name_suffix": ""
+                "path": "/Applications/Phoenix Code.app",
+                "mac_minimum_supported_version": "0.0.0",
+                "mac_maximum_supported_version": "9999.0.0"
             }
         ]
     },

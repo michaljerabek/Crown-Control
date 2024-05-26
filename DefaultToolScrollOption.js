@@ -5,55 +5,41 @@ define(function (require, exports, module) {
 
     "use strict";
 
-    var EditorManager = brackets.getModule("editor/EditorManager"),
-        MainViewManager = brackets.getModule("view/MainViewManager");
+    const EditorManager = brackets.getModule("editor/EditorManager");
+    const MainViewManager = brackets.getModule("view/MainViewManager");
 
+    const ModifierKeys = require("ModifierKeys");
+    const CrownConnection = require("CrownConnection");
 
-    var TOOL_OPTION_NAME_REGEX = /^Scroll/;
-
-
-    var ModifierKeys = require("ModifierKeys");
-
+    const TOOL_OPTION_NAME_REGEX = /^Scroll/;
 
     exports.shouldBeUsed = function (crownMsg) {
-
         return crownMsg.task_options.current_tool_option.match(TOOL_OPTION_NAME_REGEX);
     };
 
     exports.update = function (crownMsg) {
+        const editor = EditorManager.getActiveEditor();
+        if (!editor) return;
 
-        var editor = EditorManager.getActiveEditor();
-
-        if (!editor) {
-
-            return;
-        }
-
-        var editorToScroll = editor;
-
+        let editorToScroll = editor;
         if ((crownMsg.task_options.current_tool_option.match(/Inactive$/) && !ModifierKeys.altKey) ||
             (crownMsg.task_options.current_tool_option.match(/Active$/) && ModifierKeys.altKey)) {
-
-            var paneId = MainViewManager.FIRST_PANE === editor._paneId ? MainViewManager.SECOND_PANE : MainViewManager.FIRST_PANE;
-
+            const paneId = MainViewManager.FIRST_PANE === editor._paneId ? MainViewManager.SECOND_PANE: MainViewManager.FIRST_PANE;
             editorToScroll = MainViewManager._getPane(paneId)._currentView;
         }
 
-        var currentScroll = editorToScroll.getScrollPos(),
+        const currentScroll = editorToScroll.getScrollPos();
+        const scrollDelta = !crownMsg.delta ? 0:
+            crownMsg.delta > 0 ?
+                Math.max( 5, crownMsg.delta) * (ModifierKeys.ctrlKey ? 2: 1.25):
+                Math.min(-5, crownMsg.delta) * (ModifierKeys.ctrlKey ? 2: 1.25);
 
-            scrollDelta = crownMsg.delta ?
-                crownMsg.delta > 0 ?
-                    Math.max(5, crownMsg.delta) * (ModifierKeys.ctrlKey ? 2 : 1.25):
-                    Math.min(-5, crownMsg.delta) * (ModifierKeys.ctrlKey ? 2 : 1.25):
-                0,
-
-            dirH = !!crownMsg.task_options.current_tool_option.match(/^ScrollH/);
-
+        let dirH = !!crownMsg.task_options.current_tool_option.match(/^ScrollH/);
         dirH = (dirH && !ModifierKeys.shiftKey) || (!dirH && ModifierKeys.shiftKey);
 
         editorToScroll.setScrollPos(
-            !dirH ? currentScroll.x : Math.max(0, Math.round(currentScroll.x + scrollDelta)),
-            !dirH ? Math.max(0, Math.round(currentScroll.y + scrollDelta)) : currentScroll.y
+            !dirH ? currentScroll.x: Math.max(0, Math.round(currentScroll.x + scrollDelta)),
+            !dirH ? Math.max(0, Math.round(currentScroll.y + scrollDelta)): currentScroll.y
         );
     };
 });

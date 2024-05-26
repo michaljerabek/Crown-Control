@@ -1,5 +1,5 @@
 {
-    "GUID": "9df01287-806d-4292-9ee4-2c6e477fee55",
+    "GUID": "11c8bb28-9fca-4489-a59f-bd11c0d689c5",
     "tools": [
         {
             "name": "CSSFilters",
@@ -711,7 +711,7 @@
         {
             "name": "keystrokeassignment",
             "win_id": "0x10000",
-            "mac_id": 73
+            "mac_subid": 73
         }
     ]
 }

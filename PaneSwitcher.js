@@ -5,92 +5,67 @@ define(function (require, exports, module) {
 
     "use strict";
 
-    var MainViewManager = brackets.getModule("view/MainViewManager"),
-        CommandManager = brackets.getModule("command/CommandManager"),
-        Commands = brackets.getModule("command/Commands"),
-        WorkspaceManager = brackets.getModule("view/WorkspaceManager"),
-        KeyBindingManager = brackets.getModule("command/KeyBindingManager"),
+    const MainViewManager = brackets.getModule("view/MainViewManager");
+    const CommandManager = brackets.getModule("command/CommandManager");
+    const Commands = brackets.getModule("command/Commands");
+    const WorkspaceManager = brackets.getModule("view/WorkspaceManager");
+    const KeyBindingManager = brackets.getModule("command/KeyBindingManager");
 
-        Options = require("Options");
+    const Options = require("Options");
 
-
-    var switchPaneCommand = "mjerabek.cz.crowncontrol.switch-pane-focus",
-        switchPaneSizeCommand = "mjerabek.cz.crowncontrol.switch-pane-focus-and-toggle-size",
-        switchPaneTypeCommand = "mjerabek.cz.crowncontrol.switch-split-view-type",
-        closeSplitViewCommand = "mjerabek.cz.crowncontrol.close-split-view";
-
-
-    var lastSplitViewTypeCommand = Commands.CMD_SPLITVIEW_VERTICAL;
-
+    const switchPaneCommand = "mjerabek.cz.crowncontrol.switch-pane-focus";
+    const switchPaneSizeCommand = "mjerabek.cz.crowncontrol.switch-pane-focus-and-toggle-size";
+    const switchPaneTypeCommand = "mjerabek.cz.crowncontrol.switch-split-view-type";
+    const closeSplitViewCommand = "mjerabek.cz.crowncontrol.close-split-view";
+    let lastSplitViewTypeCommand = Commands.CMD_SPLITVIEW_VERTICAL;
 
     function switchPaneFocus() {
-
         if (MainViewManager.getPaneCount() === 1) {
-
             CommandManager.execute(lastSplitViewTypeCommand);
-
         } else {
-
             MainViewManager.switchPaneFocus();
         }
     }
 
     function switchPaneFocusAndSize() {
-
         if (MainViewManager.getPaneCount() === 1) {
-
-            CommandManager.execute(lastSplitViewTypeCommand);
-
-        } else {
-
-            var scheme = MainViewManager.getLayoutScheme(),
-
-                $editorHolder = $("#editor-holder"),
-                $panes = $editorHolder.find(".view-pane"),
-                $firstPane = $panes.first(),
-                $secondPane = $panes.last();
-
-            if (scheme.columns > 1) {
-
-                var editorWidth = $editorHolder.width(),
-                    activePaneWidth = (parseFloat($firstPane.css("width")) / editorWidth) * 100;
-
-                $firstPane.css("width", (100 - activePaneWidth) + "%");
-
-            } else {
-
-                var editorHeight = $editorHolder.height(),
-                    activePaneHeight = (parseFloat($firstPane.css("height")) / editorHeight) * 100;
-
-                $firstPane.css("height", (100 - activePaneHeight) + "%");
-
-                $secondPane.css("height", activePaneHeight + "%");
-            }
-
-            WorkspaceManager.recomputeLayout();
-
-            MainViewManager.switchPaneFocus();
+            return CommandManager.execute(lastSplitViewTypeCommand);
         }
+        
+        const scheme = MainViewManager.getLayoutScheme();
+
+        const $editorHolder = $("#editor-holder");
+        const $panes = $editorHolder.find(".view-pane");
+        const $firstPane = $panes.first();
+        const $secondPane = $panes.last();
+
+        if (scheme.columns > 1) {
+            const editorWidth = $editorHolder.width();
+            const activePaneWidth = (parseFloat($firstPane.css("width")) / editorWidth) * 100;
+            $firstPane.css("width", (100 - activePaneWidth) + "%");
+        }
+        
+        if (scheme.columns === 1) {
+            const editorHeight = $editorHolder.height();
+            const activePaneHeight = (parseFloat($firstPane.css("height")) / editorHeight) * 100;
+            $firstPane.css("height", (100 - activePaneHeight) + "%");
+            $secondPane.css("height", activePaneHeight + "%");
+        }
+
+        WorkspaceManager.recomputeLayout();
+        MainViewManager.switchPaneFocus();
     }
 
     function switchSplitViewType() {
-
-        var scheme = MainViewManager.getLayoutScheme();
-
-        if (scheme.columns !== 2) {
-
-            lastSplitViewTypeCommand = Commands.CMD_SPLITVIEW_VERTICAL;
-
-        } else {
-
-            lastSplitViewTypeCommand = Commands.CMD_SPLITVIEW_HORIZONTAL;
-        }
+        const scheme = MainViewManager.getLayoutScheme();
+        lastSplitViewTypeCommand = scheme.columns !== 2 ? 
+            Commands.CMD_SPLITVIEW_VERTICAL:
+            Commands.CMD_SPLITVIEW_HORIZONTAL;
 
         CommandManager.execute(lastSplitViewTypeCommand);
     }
 
     function closeSplitView() {
-
         CommandManager.execute(Commands.CMD_SPLITVIEW_NONE);
     }
 
@@ -98,32 +73,20 @@ define(function (require, exports, module) {
     CommandManager.register("Switch active pane and size", switchPaneSizeCommand, switchPaneFocusAndSize);
     CommandManager.register("Switch split view type", switchPaneTypeCommand, switchSplitViewType);
     CommandManager.register("Close split view", closeSplitViewCommand, closeSplitView);
+    
+    KeyBindingManager.addBinding(switchPaneCommand, {
+        key: (Options.get("pane-switcher-fkey") || "F9")
+    });
 
-    if (!KeyBindingManager.getKeyBindings(switchPaneCommand).length) {
+    KeyBindingManager.addBinding(switchPaneSizeCommand, {
+        key: "Ctrl-Alt-" + (Options.get("pane-switcher-fkey") || "F9")
+    });
 
-        KeyBindingManager.addBinding(switchPaneCommand, {
-            key: Options.get("pane-switcher-fkey")
-        });
-    }
+    KeyBindingManager.addBinding(switchPaneTypeCommand, {
+        key: "Ctrl-" + (Options.get("pane-switcher-fkey") || "F9")
+    });
 
-    if (!KeyBindingManager.getKeyBindings(switchPaneSizeCommand).length) {
-
-        KeyBindingManager.addBinding(switchPaneSizeCommand, {
-            key: "Ctrl-Alt-" + Options.get("pane-switcher-fkey")
-        });
-    }
-
-    if (!KeyBindingManager.getKeyBindings(switchPaneTypeCommand).length) {
-
-        KeyBindingManager.addBinding(switchPaneTypeCommand, {
-            key: "Ctrl-" + Options.get("pane-switcher-fkey")
-        });
-    }
-
-    if (!KeyBindingManager.getKeyBindings(closeSplitViewCommand).length) {
-
-        KeyBindingManager.addBinding(closeSplitViewCommand, {
-            key: "Ctrl-Shift-" + Options.get("pane-switcher-fkey")
-        });
-    }
+    KeyBindingManager.addBinding(closeSplitViewCommand, {
+        key: "Ctrl-Shift-" + (Options.get("pane-switcher-fkey") || "F9")
+    });
 });
