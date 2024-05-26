@@ -1,7 +1,7 @@
 {
   "name": "mjerabek.cz.crowncontrol",
   "title": "Crown Control",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Logitech Crown (Craft) integration for Phoenix Code. Probably won't work on macOS. READ INSTALLATION INSTRUCTIONS ON GITHUB.",
   "main": "main.js",
   "homepage": "https://github.com/michaljerabek/Crown-Control",
