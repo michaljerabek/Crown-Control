@@ -23,9 +23,7 @@ define(function (require, exports, module) {
             message_type: "register",
             plugin_guid: PLUGIN_GUID,
             PID: Number(pid),
-            execName: platform.startsWith("win") ? 
-                "Phoenix Code Experimental Build.exe": 
-                "Phoenix Code Experimental Build.app"
+            execName: platform.startsWith("win") ? "Phoenix Code.exe": "Phoenix Code.app"
         }));
     }
 
