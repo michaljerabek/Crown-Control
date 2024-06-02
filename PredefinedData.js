@@ -37,7 +37,7 @@ define(function (require, exports, module) {
     }
 
     FileSystem.on("change", function (event, subject) {
-        if (subject.isFile && subject.fullPath === getCurrentFilePath()) {
+        if (subject?.isFile && subject?.fullPath === getCurrentFilePath()) {
             loadData(subject);
         }
     });
